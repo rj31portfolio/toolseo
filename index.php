@@ -21,5 +21,7 @@ if(in_array($section,['features','pricing','how-it-works','seo-tools','about','c
 if($section==='sitemap.xml'){header('Content-Type: application/xml');echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';foreach(['','features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy'] as $p)echo '<url><loc>'.e(cfg('APP_URL').'/'.$p).'</loc></url>';echo '</urlset>';exit;}
 if(str_starts_with($section,'admin')){require ROOT.'/admin/index.php';exit;}
 $modules=['local-seo','sitemap-generator','robots-generator','services','dashboard','websites','website','audit','pages','keywords','rankings','research','competitors','backlinks','content','tasks','reports','report','ai-assistant','schema','internal-links','automations','human-services','team','billing','profile','notifications','subscription','project-settings'];
-if($section==='no-api-tools'||in_array($section,$modules)){require ROOT.'/dashboard/index.php';exit;}
+if(isset(WorkspaceUI::utilities()[$section])){$localTool=substr($section,6);$section='no-api-tools';require ROOT.'/dashboard/index.php';exit;}
+if($section==='no-api-tools'){$section='services';}
+if(in_array($section,$modules)){require ROOT.'/dashboard/index.php';exit;}
 fail('We couldn’t find that page.',404);

@@ -1,7 +1,6 @@
 <?php
 final class WorkspaceUI {
  public static function catalog(): array {return [
-  'no-api-tools'=>['Create','No-API tools','Local SEO, text, code and image utilities.','Choose a utility and enter your content.','Generated files, image exports and content checks.','code'],
   'audit'=>['Discover','Website audit','Find technical and content issues on your website.','Run an audit, then review issues in priority order.','A health score, affected pages and recommended fixes.','scan'],
   'local-seo'=>['Discover','GBP / Local SEO analyzer','Audit manually entered business profile and local website details.','Enter your profile, reviews, hours and comparison details.','A local readiness score, recommendations, schema, saved history and PDF report.','globe'],
   'pages'=>['Discover','Page analysis','Understand what each crawled page needs.','Open a page to review its title, headings and metadata.','Page details and suggestions you can act on.','file'],
@@ -22,6 +21,23 @@ final class WorkspaceUI {
   'human-services'=>['Manage','Expert SEO services','Get help from an SEO specialist.','Choose a service and describe your goals and budget.','A request for review, a quote and progress updates.','people'],
   'team'=>['Manage','Team & branding','Work together and personalize your reports.','Assign registered members to this project.','Shared project access and saved report branding.','people'],
  ];}
+ public static function utilities(): array {
+  $groups=[
+   'SEO Tools'=>['sitemap'=>'Sitemap Generator','robots'=>'Robots.txt Generator','meta'=>'Meta Title/Description Generator','serp'=>'SERP Preview','score'=>'SEO Score Checker','canonical'=>'Canonical Generator','hreflang'=>'Hreflang Generator','og'=>'Open Graph Generator','redirect'=>'301 Redirect Generator'],
+   'Schema Tools'=>['schema'=>'Schema Generator','business'=>'LocalBusiness Schema Generator','faq'=>'FAQ Schema Generator'],
+   'Content Tools'=>['density'=>'Keyword Density Checker','counter'=>'Word/Character Counter','slug'=>'Slug Generator'],
+   'Marketing Tools'=>['qr'=>'QR Code Generator','utm'=>'UTM Builder','whatsapp'=>'WhatsApp Link Generator'],
+   'Image Tools'=>['favicon'=>'Favicon Generator','compress'=>'Image Compressor','resize'=>'Image Resizer','convert'=>'JPG/PNG/WebP Converter'],
+   'Developer Tools'=>['json'=>'JSON Formatter','minify'=>'HTML/CSS/JS Minifier']
+  ];
+  $icons=['SEO Tools'=>'scan','Schema Tools'=>'code','Content Tools'=>'edit','Marketing Tools'=>'link','Image Tools'=>'layers','Developer Tools'=>'code'];$items=[];
+  foreach($groups as $group=>$tools)foreach($tools as $id=>$name)$items['tools/'.$id]=[$group,$name,'','Enter your content and generate the result.','A result ready to copy or download.',$icons[$group]];
+  return $items;
+ }
+ public static function directory(): array {
+  $items=self::catalog();foreach(['schema','sitemap-generator','robots-generator'] as $id)unset($items[$id]);
+  return array_merge($items,self::utilities());
+ }
  public static function icon(string $name): string {
   $paths=['scan'=>'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M7 12h10','search'=>'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0','file'=>'M14 2H5v20h14V7zM14 2v6h5M8 12h8M8 16h6','layers'=>'M12 3 2 8l10 5 10-5-10-5zM2 12l10 5 10-5M2 16l10 5 10-5','key'=>'M14 5a5 5 0 1 1-7 7L2 17v5h5v-3h3l3-3','chart'=>'M3 3v18h18M7 15l4-5 4 2 6-7','link'=>'M10 13a5 5 0 0 0 7 0l4-4a5 5 0 0 0-7-7l-3 3M14 11a5 5 0 0 0-7 0l-4 4a5 5 0 0 0 7 7l3-3','spark'=>'m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6zM20 2v4m-2-2h4','edit'=>'m16 3 5 5-12 12-6 1 1-6L16 3zM13 6l5 5','code'=>'m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18','check'=>'M9 11l3 3L22 4M21 12v9H3V3h12','bolt'=>'m13 2-9 12h7l-1 8 10-12h-7l1-8z','people'=>'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M17 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4','grid'=>'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z','globe'=>'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18','settings'=>'M4 7h16M4 17h16M8 4v6m8 4v6'];
   return '<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'.($paths[$name]??$paths['grid']).'"/></svg>';
