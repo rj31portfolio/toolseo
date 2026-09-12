@@ -13,3 +13,4 @@
 /storage/install.guard
 /storage/review-config.php
 /storage/review-credentials.json
+/storage/no-api-build/node_modules/

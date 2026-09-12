@@ -1,6 +1,7 @@
 <?php
 final class WorkspaceUI {
  public static function catalog(): array {return [
+  'no-api-tools'=>['Create','No-API tools','Local SEO, text, code and image utilities.','Choose a utility and enter your content.','Generated files, image exports and content checks.','code'],
   'audit'=>['Discover','Website audit','Find technical and content issues on your website.','Run an audit, then review issues in priority order.','A health score, affected pages and recommended fixes.','scan'],
   'local-seo'=>['Discover','GBP / Local SEO analyzer','Audit manually entered business profile and local website details.','Enter your profile, reviews, hours and comparison details.','A local readiness score, recommendations, schema, saved history and PDF report.','globe'],
   'pages'=>['Discover','Page analysis','Understand what each crawled page needs.','Open a page to review its title, headings and metadata.','Page details and suggestions you can act on.','file'],
