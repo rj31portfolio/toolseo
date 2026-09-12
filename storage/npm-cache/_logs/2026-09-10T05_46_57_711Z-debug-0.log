@@ -1,0 +1,116 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.9.0
+2 info using node@v24.14.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\xampp\htdocs\ppso\storage\browser-tools\.npmrc
+5 silly config load:file:C:\Users\hp\.npmrc
+6 silly config load:file:C:\xampp\htdocs\ppso\storage\browser-tools\etc\npmrc
+7 verbose title npm install pdfjs-dist @napi-rs/canvas
+8 verbose argv "install" "--prefix" "storage/browser-tools" "--cache" "storage/npm-cache" "--offline" "false" "--no-audit" "--no-fund" "pdfjs-dist" "@napi-rs/canvas"
+9 verbose logfile logs-max:10 dir:C:\xampp\htdocs\ppso\storage\npm-cache\_logs\2026-09-10T05_46_57_711Z-
+10 verbose logfile C:\xampp\htdocs\ppso\storage\npm-cache\_logs\2026-09-10T05_46_57_711Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:2348810240 maxSize:587202560 maxEntrySize:293601280
+13 silly idealTree buildDeps
+14 silly fetch manifest pdfjs-dist@*
+15 silly packumentCache full:https://registry.npmjs.org/pdfjs-dist cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/npm 512ms
+17 http fetch GET 200 https://registry.npmjs.org/pdfjs-dist 557ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/pdfjs-dist set size:undefined disposed:false
+19 silly fetch manifest @napi-rs/canvas@*
+20 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas 46ms (cache miss)
+22 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas set size:undefined disposed:false
+23 silly placeDep ROOT @napi-rs/canvas@1.0.9 OK for:  want: *
+24 silly placeDep ROOT pdfjs-dist@6.3.289 OK for:  want: *
+25 silly fetch manifest @napi-rs/canvas-darwin-x64@1.0.9
+26 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 cache-miss
+27 silly fetch manifest @napi-rs/canvas-darwin-arm64@1.0.9
+28 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 cache-miss
+29 silly fetch manifest @napi-rs/canvas-android-arm64@1.0.9
+30 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 cache-miss
+31 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 40ms (cache miss)
+32 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-arm64 set size:undefined disposed:false
+33 silly fetch manifest @napi-rs/canvas-linux-x64-gnu@1.0.9
+34 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu cache-miss
+35 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 53ms (cache miss)
+36 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-darwin-x64 set size:undefined disposed:false
+37 silly fetch manifest @napi-rs/canvas-linux-x64-musl@1.0.9
+38 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl cache-miss
+39 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu 35ms (cache miss)
+40 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-gnu set size:undefined disposed:false
+41 silly fetch manifest @napi-rs/canvas-win32-x64-msvc@1.0.9
+42 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc cache-miss
+43 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl 45ms (cache miss)
+44 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-x64-musl set size:undefined disposed:false
+45 silly fetch manifest @napi-rs/canvas-linux-arm64-gnu@1.0.9
+46 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu cache-miss
+47 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc 34ms (cache miss)
+48 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-x64-msvc set size:undefined disposed:false
+49 silly fetch manifest @napi-rs/canvas-linux-arm64-musl@1.0.9
+50 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl cache-miss
+51 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl 38ms (cache miss)
+52 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-musl set size:undefined disposed:false
+53 silly fetch manifest @napi-rs/canvas-win32-arm64-msvc@1.0.9
+54 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-arm64-msvc cache-miss
+55 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu 53ms (cache miss)
+56 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm64-gnu set size:undefined disposed:false
+57 silly fetch manifest @napi-rs/canvas-linux-riscv64-gnu@1.0.9
+58 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu cache-miss
+59 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu 30ms (cache miss)
+60 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-riscv64-gnu set size:undefined disposed:false
+61 silly fetch manifest @napi-rs/canvas-linux-arm-gnueabihf@1.0.9
+62 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf cache-miss
+63 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-win32-arm64-msvc 41ms (cache miss)
+64 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-win32-arm64-msvc set size:undefined disposed:false
+65 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf 52ms (cache miss)
+66 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-linux-arm-gnueabihf set size:undefined disposed:false
+67 http fetch GET 200 https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 354ms (cache miss)
+68 silly packumentCache full:https://registry.npmjs.org/@napi-rs%2fcanvas-android-arm64 set size:undefined disposed:false
+69 silly placeDep ROOT @napi-rs/canvas-android-arm64@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+70 silly placeDep ROOT @napi-rs/canvas-darwin-arm64@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+71 silly placeDep ROOT @napi-rs/canvas-darwin-x64@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+72 silly placeDep ROOT @napi-rs/canvas-linux-arm-gnueabihf@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+73 silly placeDep ROOT @napi-rs/canvas-linux-arm64-gnu@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+74 silly placeDep ROOT @napi-rs/canvas-linux-arm64-musl@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+75 silly placeDep ROOT @napi-rs/canvas-linux-riscv64-gnu@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+76 silly placeDep ROOT @napi-rs/canvas-linux-x64-gnu@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+77 silly placeDep ROOT @napi-rs/canvas-linux-x64-musl@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+78 silly placeDep ROOT @napi-rs/canvas-win32-arm64-msvc@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+79 silly placeDep ROOT @napi-rs/canvas-win32-x64-msvc@1.0.9 OK for: @napi-rs/canvas@1.0.9 want: 1.0.9
+80 silly reify mark retired [
+80 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\playwright-core',
+80 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core',
+80 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core.cmd',
+80 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core.ps1'
+80 silly reify ]
+81 silly reify moves {
+81 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\playwright-core': 'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.playwright-core-gXsYWfto',
+81 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core': 'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\.playwright-core-SjfYiH7x',
+81 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core.cmd': 'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\.playwright-core.cmd-pGYaAiYs',
+81 silly reify   'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\playwright-core.ps1': 'C:\\xampp\\htdocs\\ppso\\storage\\browser-tools\\node_modules\\.bin\\.playwright-core.ps1-LKewS0T8'
+81 silly reify }
+82 http cache @napi-rs/canvas-win32-x64-msvc@https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-1.0.9.tgz 0ms (cache hit)
+83 http cache pdfjs-dist@https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.3.289.tgz 0ms (cache hit)
+84 http cache @napi-rs/canvas@https://registry.npmjs.org/@napi-rs/canvas/-/canvas-1.0.9.tgz 0ms (cache hit)
+85 silly tarball no local data for @napi-rs/canvas-win32-x64-msvc@https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-1.0.9.tgz. Extracting by manifest.
+86 silly tarball no local data for pdfjs-dist@https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.3.289.tgz. Extracting by manifest.
+87 silly tarball no local data for @napi-rs/canvas@https://registry.npmjs.org/@napi-rs/canvas/-/canvas-1.0.9.tgz. Extracting by manifest.
+88 http fetch GET 200 https://registry.npmjs.org/@napi-rs/canvas/-/canvas-1.0.9.tgz 587ms (cache miss)
+89 http fetch GET 200 https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-1.0.9.tgz 965ms (cache miss)
+90 http fetch GET 200 https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.3.289.tgz 1613ms (cache miss)
+91 silly ADD node_modules/@napi-rs/canvas-win32-x64-msvc
+92 silly ADD node_modules/pdfjs-dist
+93 silly ADD node_modules/@napi-rs/canvas
+94 silly REMOVE node_modules/playwright-core
+95 verbose cwd C:\xampp\htdocs\ppso
+96 verbose os Windows_NT 10.0.19045
+97 verbose node v24.14.0
+98 verbose npm  v11.9.0
+99 notice
+99 notice New minor version of npm available! 11.9.0 -> 11.19.1
+99 notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.1
+99 notice To update run: npm install -g npm@11.19.1
+99 notice  { force: true, Symbol(proc-log.meta): true }
+100 verbose exit 0
+101 info ok

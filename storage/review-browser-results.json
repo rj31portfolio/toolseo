@@ -1,0 +1,1188 @@
+{
+  "count": 76,
+  "errors": [],
+  "failures": [],
+  "reportUrl": "http://127.0.0.1:8086/report?id=7&website_id=1",
+  "inventory": [
+    {
+      "path": "dashboard",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "ϟ Run audit"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "websites",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "+ Add website"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "website",
+          "fields": [
+            "name",
+            "domain",
+            "country",
+            "language",
+            "search_engine",
+            "timezone"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "audit",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "ϟ Run a fresh audit",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore",
+        "+ Create task",
+        "Mark resolved",
+        "Ignore"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "pages",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "✧ Generate recommendations",
+        "Save for review"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "page-suggestions",
+          "fields": [
+            "website_id",
+            "id"
+          ]
+        },
+        {
+          "api": "save-page-suggestions",
+          "fields": [
+            "website_id",
+            "id",
+            "content"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "keywords",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Search",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Save record →",
+        "Import CSV",
+        "Add keywords"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/keywords?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "keyword",
+            "country",
+            "language",
+            "search_engine",
+            "device",
+            "target_url",
+            "intent",
+            "tags"
+          ]
+        },
+        {
+          "api": "import",
+          "fields": [
+            "module",
+            "website_id",
+            "csv"
+          ]
+        },
+        {
+          "api": "keyword-bulk",
+          "fields": [
+            "website_id",
+            "keywords"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "rankings",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Check Google rankings"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "research",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Analyze keyword",
+        "Track keyword"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "research",
+          "fields": [
+            "website_id",
+            "seed"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "competitors",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Search",
+        "Delete",
+        "Save record →",
+        "Save keyword"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/competitors?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "domain",
+            "notes"
+          ]
+        },
+        {
+          "api": "competitor-keyword",
+          "fields": [
+            "website_id",
+            "competitor_id",
+            "keyword",
+            "position"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backlinks",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Find referring-page candidates",
+        "Check link",
+        "Check link",
+        "Search",
+        "Delete",
+        "Delete",
+        "Save record →",
+        "Import CSV"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/backlinks?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "source_url",
+            "target_url",
+            "anchor",
+            "follow",
+            "status"
+          ]
+        },
+        {
+          "api": "import",
+          "fields": [
+            "module",
+            "website_id",
+            "csv"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "content",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Search",
+        "Delete",
+        "Save record →"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/content?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "topic",
+            "keyword",
+            "audience",
+            "country",
+            "language"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tasks",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Search",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Save record →",
+        "Assign task"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/tasks?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "title",
+            "url",
+            "priority",
+            "due_date",
+            "notes",
+            "status"
+          ]
+        },
+        {
+          "api": "assign-task",
+          "fields": [
+            "website_id",
+            "id",
+            "assigned_user"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "reports",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "+ Create report"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "ai-assistant",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Title ideas",
+        "Keyword ideas",
+        "Blog post",
+        "Article",
+        "Humanize text",
+        "Generate draft ↗",
+        "Copy result",
+        "Download Markdown",
+        "Humanize this result",
+        "Ask assistant ↗"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "ai-write",
+          "fields": [
+            "website_id",
+            "tool",
+            "topic",
+            "keyword",
+            "audience",
+            "language",
+            "tone",
+            "words",
+            "source",
+            "instructions"
+          ]
+        },
+        {
+          "api": "ai",
+          "fields": [
+            "website_id",
+            "message"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "schema",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Generate JSON-LD",
+        "Copy JSON-LD"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "schema",
+          "fields": [
+            "website_id",
+            "type",
+            "json"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "internal-links",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Find opportunities",
+        "Accepted",
+        "Rejected",
+        "Implemented"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "automations",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Save rule",
+        "Save rule",
+        "Save rule",
+        "Save rule"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "automation",
+          "fields": [
+            "website_id",
+            "code",
+            "enabled"
+          ]
+        },
+        {
+          "api": "automation",
+          "fields": [
+            "website_id",
+            "code",
+            "enabled"
+          ]
+        },
+        {
+          "api": "automation",
+          "fields": [
+            "website_id",
+            "code",
+            "enabled"
+          ]
+        },
+        {
+          "api": "automation",
+          "fields": [
+            "website_id",
+            "code",
+            "enabled"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "human-services",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "SEO Audit ReviewGet help interpreting findings and deciding which issues to fix first.Select service →",
+        "Technical SEORequest help with crawling, indexing, broken pages and site structure.Select service →",
+        "On-Page SEOGet support with titles, descriptions, headings and page content.Select service →",
+        "Keyword ResearchRequest keyword research tailored to your audience and goals.Select service →",
+        "Content OptimizationImprove clarity, structure and coverage in existing content.Select service →",
+        "Local SEORequest help improving your local business search presence.Select service →",
+        "Monthly SEO ManagementDiscuss a recurring plan for SEO priorities and progress reviews.Select service →",
+        "Search",
+        "Delete",
+        "Delete",
+        "Delete",
+        "Save request →"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/human-services?website_id=1",
+          "fields": [
+            "website_id",
+            "q"
+          ]
+        },
+        {
+          "api": "save",
+          "fields": [
+            "module",
+            "website_id",
+            "id",
+            "service",
+            "budget",
+            "description",
+            "priority"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "team",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Remove access",
+        "Assign member",
+        "Save branding",
+        "Send invitation"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "team",
+          "fields": [
+            "website_id",
+            "email"
+          ]
+        },
+        {
+          "api": "branding",
+          "fields": [
+            "website_id",
+            "agency_name",
+            "agency_website",
+            "agency_contact",
+            "report_footer",
+            "brand_color",
+            "logo_url"
+          ]
+        },
+        {
+          "api": "invite",
+          "fields": [
+            "website_id",
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "billing",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Cancel subscription",
+        "Continue to secure checkout ↗",
+        "Buy 100 credits · ₹499"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "checkout-form",
+          "fields": [
+            "plan_id",
+            "coupon"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/billing?website_id=1",
+          "fields": [
+            "purpose"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "profile",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Save profile"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "profile",
+          "fields": [
+            "name",
+            "company",
+            "phone",
+            "timezone",
+            "country",
+            "notification_email",
+            "current_password",
+            "new_password"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "notifications",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read",
+        "Mark read"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "project-settings",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Save project settings"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "project-settings",
+          "fields": [
+            "website_id",
+            "name",
+            "country",
+            "language",
+            "timezone",
+            "search_engine",
+            "client_name",
+            "client_email",
+            "monthly_report"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/users",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Update access"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/user",
+          "fields": [
+            "id",
+            "role",
+            "active"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/plans",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Save plan"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/plan",
+          "fields": [
+            "id",
+            "name",
+            "price",
+            "websites",
+            "keywords",
+            "crawl_pages",
+            "reports",
+            "ai_requests",
+            "team_members",
+            "white_label"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/subscriptions",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Grant access until expiry"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/subscription",
+          "fields": [
+            "user_id",
+            "plan_id",
+            "ends_at"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/payments",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/coupons",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Create coupon"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/coupon",
+          "fields": [
+            "code",
+            "type",
+            "amount",
+            "starts_at",
+            "ends_at",
+            "usage_limit",
+            "per_user_limit"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/websites",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/issues",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/tasks",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/services",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Update request",
+        "Send quote to workspace"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/service",
+          "fields": [
+            "id",
+            "assigned_user",
+            "status"
+          ]
+        },
+        {
+          "api": "admin/quote",
+          "fields": [
+            "id",
+            "amount"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/reports",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/settings",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰",
+        "Save settings",
+        "Publish page text",
+        "Download database SQL",
+        "Save scheduling settings",
+        "Save private configuration"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/settings",
+          "fields": [
+            "site_name",
+            "contact_email",
+            "crawl_delay_ms",
+            "registration",
+            "maintenance",
+            "require_verification",
+            "score_weights"
+          ]
+        },
+        {
+          "api": "admin/page",
+          "fields": [
+            "page",
+            "content"
+          ]
+        },
+        {
+          "api": "http://127.0.0.1:8086/api/v1/admin/backup",
+          "fields": [
+            "csrf"
+          ]
+        },
+        {
+          "api": "admin/scheduling",
+          "fields": [
+            "trial_days",
+            "trial_plan_id",
+            "grace_days",
+            "ranking_frequency_hours"
+          ]
+        },
+        {
+          "api": "admin/provider",
+          "fields": [
+            "provider",
+            "endpoint",
+            "key",
+            "secret",
+            "extra",
+            "port",
+            "clear"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "admin/logs",
+      "buttons": [
+        "Sign out",
+        "",
+        "☰"
+      ],
+      "forms": [
+        {
+          "api": "http://127.0.0.1:8086/logout",
+          "fields": [
+            "csrf"
+          ]
+        }
+      ]
+    }
+  ]
+}

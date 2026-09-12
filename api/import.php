@@ -1,0 +1,20 @@
+<?php
+$module=enum_input('module',['keywords','backlinks']);$file=$_FILES['csv']??null;
+if(!$file||$file['error']!==UPLOAD_ERR_OK||$file['size']>2097152||strtolower(pathinfo($file['name'],PATHINFO_EXTENSION))!=='csv'||!is_uploaded_file($file['tmp_name']))fail('Upload a CSV file no larger than 2 MB.');
+$mime=(new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);if(!in_array($mime,['text/plain','text/csv','application/csv','application/vnd.ms-excel']))fail('Invalid CSV file type.');
+$stream=fopen($file['tmp_name'],'rb');$headers=fgetcsv($stream,0,',','"','');if(!$headers)fail('CSV header is required.');$headers=array_map(fn($h)=>strtolower(trim(ltrim($h,"\xEF\xBB\xBF"))),$headers);if(count($headers)!==count(array_unique($headers)))fail('Duplicate CSV headers.');$required=$module==='keywords'?['keyword']:['source_url','target_url'];foreach($required as $key)if(!in_array($key,$headers))fail('Missing CSV column: '.$key);
+$data=[];while(($r=fgetcsv($stream,0,',','"',''))!==false){if($r===[null])continue;if(count($data)>=1000)fail('Maximum 1,000 rows per import.');if(count($r)!==count($headers))fail('Incorrect column count at row '.(count($data)+2));$record=array_combine($headers,array_map('trim',$r));foreach($record as $key=>$v){if(!mb_check_encoding($v,'UTF-8')||strlen($v)>2000||str_contains($v,"\0"))fail('Invalid CSV content.');}foreach($required as $key)if($record[$key]==='')fail('Empty required value at row '.(count($data)+2));$data[]=$record;}fclose($stream);if(!$data)fail('No CSV records found.');
+db()->beginTransaction();query('SELECT id FROM users WHERE id=? FOR UPDATE',[$w['user_id']]);
+if($module==='keywords'){$used=(int)value('SELECT COUNT(*) FROM keywords k JOIN websites w ON w.id=k.website_id WHERE w.user_id=?',[$w['user_id']]);limit_check((int)$w['user_id'],'keywords',$used+count($data)-1);}
+foreach($data as $i=>$r){
+ if($module==='keywords'){
+  if(mb_strlen($r['keyword'])>190)fail('Keyword too long at row '.($i+2));$device=$r['device']??'desktop';if(!in_array($device,['desktop','mobile']))fail('Invalid device at row '.($i+2));
+  foreach(['search_volume','difficulty','position'] as $k)if(isset($r[$k])&&$r[$k]!==''&&(!is_numeric($r[$k])||$r[$k]<0||($k==='difficulty'&&$r[$k]>100)||($k==='position'&&($r[$k]<1||$r[$k]>1000))))fail('Invalid '.$k.' at row '.($i+2));
+  $target=$r['target_url']??'';if($target)try{$target=SafeHttp::normalize($target);}catch(Throwable){fail('Invalid target URL.');}
+  query("INSERT INTO keywords(website_id,keyword,country,language,device,target_url,intent,tags,search_volume,difficulty,source) VALUES (?,?,?,?,?,?,?,?,?,?,'csv')",[$wid??$w['id'],$r['keyword'],$r['country']??'India',$r['language']??'en',$device,$target,$r['intent']??'',$r['tags']??'',($r['search_volume']??'')!==''?(int)$r['search_volume']:null,($r['difficulty']??'')!==''?$r['difficulty']:null]);$kid=(int)db()->lastInsertId();if(($r['position']??'')!=='')query("INSERT INTO keyword_rankings(keyword_id,date,position,url,source) VALUES (?,CURDATE(),?,?,'csv')",[$kid,(int)$r['position'],$target]);
+ }else{
+  try{$source=SafeHttp::normalize($r['source_url']);$target=SafeHttp::normalize($r['target_url']);}catch(Throwable){fail('Invalid URL at row '.($i+2));}$follow=$r['follow']??'follow';$status=$r['status']??'active';if(!in_array($follow,['follow','nofollow'])||!in_array($status,['active','lost']))fail('Invalid backlink status.');$rating=($r['domain_rating']??'')!==''?$r['domain_rating']:null;if($rating!==null&&(!is_numeric($rating)||$rating<0||$rating>100))fail('Domain rating must be between 0 and 100.');
+  query("INSERT INTO backlinks(website_id,source_url,target_url,anchor,domain,domain_rating,follow,first_seen,last_seen,status,source) VALUES (?,?,?,?,?,?,?,CURDATE(),CURDATE(),?,'csv')",[$w['id'],$source,$target,$r['anchor']??'',parse_url($source,PHP_URL_HOST),$rating,$follow,$status]);
+ }
+}
+audit_log('csv.imported',['module'=>$module,'rows'=>count($data),'website_id'=>$w['id']]);db()->commit();json_response(['count'=>count($data)],'Imported '.count($data).' records');

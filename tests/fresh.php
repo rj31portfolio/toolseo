@@ -1,0 +1,5 @@
+<?php
+if(PHP_SAPI!=='cli')exit;
+$root=dirname(__DIR__);$config=require $root.'/config/config.php';if(!str_starts_with($config['DB_NAME'],'seo_autopilot_test'))throw new RuntimeException('Refusing to replace a non-test configuration.');
+$config['DB_NAME']='seo_autopilot_test_'.date('YmdHis');$config['INSTALL_TOKEN']=bin2hex(random_bytes(32));$pdo=new PDO('mysql:host='.$config['DB_HOST'].';port='.$config['DB_PORT'],$config['DB_USER'],$config['DB_PASS'],[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);$pdo->exec('CREATE DATABASE `'.$config['DB_NAME'].'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+file_put_contents($root.'/config/local.php',"<?php\nreturn ".var_export($config,true).";\n");if(is_file($root.'/storage/installed.lock'))rename($root.'/storage/installed.lock',$root.'/storage/test-installed-'.date('YmdHis').'.lock');foreach(glob($root.'/storage/test-*cookie.txt') as $cookie)file_put_contents($cookie,'');echo "Fresh isolated database prepared; previous test databases preserved.\n";

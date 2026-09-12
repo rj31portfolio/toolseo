@@ -1,0 +1,15 @@
+/config/local.php
+/storage/logs/*
+/storage/reports/*
+/storage/installed.lock
+/vendor/
+!/storage/logs/.gitkeep
+!/storage/reports/.gitkeep
+/storage/sessions/
+/storage/mysql-test/
+/storage/composer-cache/
+/storage/browser-tools/node_modules/
+/storage/test-*
+/storage/install.guard
+/storage/review-config.php
+/storage/review-credentials.json

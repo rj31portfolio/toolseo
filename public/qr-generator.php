@@ -1,0 +1,18 @@
+<section class="section-pad container" id="free-qr-generator" aria-labelledby="qr-heading">
+<div class="section-head"><span class="eyebrow">FREE TOOLS · NO SIGN-UP</span><h2 id="qr-heading">Free QR Code Generator</h2><p>Create a QR code for your website, business, contact details or payment address. Your inputs and logo stay in this browser. No API or login required.</p></div>
+<div class="qr-layout"><form id="qr-form" class="card stack">
+<label>QR type<select id="qr-type" name="qr_type">
+<?php foreach(['url'=>'URL / Website','text'=>'Text','phone'=>'Phone Number','email'=>'Email','whatsapp'=>'WhatsApp','sms'=>'SMS','wifi'=>'Wi-Fi','vcard'=>'vCard / Contact','location'=>'Google Maps / Location','event'=>'Event','upi'=>'UPI Payment','crypto'=>'Crypto / Wallet','file'=>'PDF / File','social'=>'Social Media','review'=>'Review','business'=>'Business Information'] as $key=>$label):?><option value="<?=$key?>"><?=e($label)?></option><?php endforeach;?>
+</select></label><div id="qr-fields" class="form-grid"></div><p id="qr-help" class="small"></p>
+<details open><summary>Customize your QR code</summary><div class="form-grid qr-options">
+<label>QR color<input type="color" name="foreground" value="#142d26"></label><label>Background color<input type="color" name="background" value="#ffffff"></label>
+<label>Style<select name="style"><option value="normal">Normal squares</option><option value="rounded">Rounded</option></select></label>
+<label>Image size<select name="size"><option value="256">256 × 256</option><option value="512" selected>512 × 512</option><option value="1024">1024 × 1024</option><option value="2048">2048 × 2048</option></select></label>
+<label>Error correction<select name="correction"><option value="L">L — 7%</option><option value="M" selected>M — 15%</option><option value="Q">Q — 25%</option><option value="H">H — 30%</option></select></label>
+<label>Add logo (PNG, JPEG or WebP, up to 2 MB)<input type="file" name="logo" accept="image/png,image/jpeg,image/webp"></label></div><button type="button" class="button secondary small-button" id="qr-remove-logo">Remove logo</button><p class="small">Logos use high error correction. Scan-test your finished code before sharing or printing.</p></details>
+<button type="submit" class="button">Generate QR code</button><p id="qr-status" role="status" aria-live="polite"></p>
+</form><div class="card qr-result"><h3>Your QR code</h3><div id="qr-preview"><p>Enter your details and select Generate QR code.</p></div><div id="qr-actions" class="row" hidden><button type="button" class="button" data-qr-export="png">Download PNG</button><button type="button" class="button secondary" data-qr-export="svg">Download SVG</button><button type="button" class="button secondary" data-qr-export="copy">Copy QR</button><button type="button" class="button secondary" data-qr-export="print">Print QR</button></div><p class="small">Static QR codes do not expire. Linked pages and files must remain available. Scanning support depends on the reader and installed apps.</p></div></div>
+<noscript><p class="alert">Enable JavaScript to generate QR codes locally in your browser.</p></noscript>
+</section>
+<link rel="stylesheet" href="<?=url('/assets/css/qr-generator.css')?>">
+<script src="<?=url('/assets/js/qrcode.js')?>" defer></script><script src="<?=url('/assets/js/qr-generator.js')?>" defer></script>

@@ -1,0 +1,7 @@
+{
+  "name": "seo-autopilot/platform",
+  "description": "Core PHP SEO automation workspace",
+  "type": "project",
+  "require": {"php": ">=8.2", "ext-pdo": "*", "ext-pdo_mysql": "*", "ext-curl": "*", "ext-dom": "*", "ext-mbstring": "*", "ext-fileinfo": "*", "dompdf/dompdf": "^3.1", "phpmailer/phpmailer": "^6.10"},
+  "config": {"sort-packages": true, "allow-plugins": false}
+}

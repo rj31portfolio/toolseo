@@ -1,0 +1,15 @@
+Options -Indexes
+DirectoryIndex index.php
+RewriteEngine On
+RewriteRule ^(?:config|includes|database|storage|tests|cron|vendor)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:admin|dashboard|auth|api|install|public)/.*\.php$ - [F,L,NC]
+RewriteRule (^|/)\. - [F,L]
+<FilesMatch "\.(sql|log|md|json|lock|example)$">
+Require all denied
+</FilesMatch>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

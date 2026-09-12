@@ -1,0 +1,20 @@
+<?php
+require __DIR__.'/unit.php';
+$html='<html><head><base href="https://source.example/articles/"></head><body><a href="https://example.com.evil.test/page">False match</a><a href="https://www.example.com/page/" rel="nofollow sponsored"> A useful link </a><a href="/relative">Relative link</a></body></html>';
+$r=Backlink::parse($html,'https://source.example/','https://example.com/page');
+check($r['found']&&$r['match_count']===1,'Backlink matching rejects lookalike domains and handles www and trailing slash');
+check($r['matches'][0]['anchor']==='A useful link'&&$r['matches'][0]['follow']==='nofollow','Anchor and rel attributes parsed');
+check(!Backlink::parse($html,'https://source.example/','https://example.com/other')['found'],'Different target path is not a verified backlink');
+check(Backlink::parse($html,'https://source.example/','https://source.example/relative')['found'],'Relative links resolve against source base');
+check(!Backlink::matches('https://example.com/a?q=1','https://example.com/a?q=2'),'Target query strings must match');
+$keywords=[['keyword'=>'up','position'=>8,'previous_position'=>12,'ranking_date'=>'2026-09-10','search_volume'=>100],['keyword'=>'down','position'=>20,'previous_position'=>15,'ranking_date'=>'2026-09-10'],['keyword'=>'missing','position'=>null,'ranking_date'=>'2026-09-10'],['keyword'=>'new','position'=>null,'ranking_date'=>null]];
+$s=KeywordAnalysis::summarize($keywords);
+check($s['average']===14.0&&$s['ranked']===2&&$s['missing']===1&&$s['unchecked']===1,'Keyword average excludes missing and unchecked records');
+check($s['improved']===1&&$s['declined']===1&&$s['top10']===1&&$s['top20']===1,'Keyword position bands and changes');
+check(str_contains(KeywordAnalysis::advice($keywords[1]),'declined'),'Analysis prioritizes observed decline');
+check(PerformanceReport::rankLabel(['position'=>null,'ranking_source'=>'hasdata_top100'])==='Not found (up to 100)','Report shows missing-range label');
+check(PerformanceReport::rankLabel(['position'=>26])==='#26','Report displays numeric rank');
+$legacy=['id'=>1,'title'=>'Legacy <script>alert(1)</script>','created_at'=>'2026-09-10','snapshot'=>json_encode(['website'=>['domain'=>'https://example.com/'],'audit'=>null,'keywords'=>[['keyword'=>'<script>bad</script>','position'=>2]],'backlinks'=>[],'tasks'=>[],'issues'=>[],'competitors'=>[]])];
+$rendered=Report::html($legacy);
+check(str_contains($rendered,'#2')&&str_contains($rendered,'&lt;script&gt;bad&lt;/script&gt;')&&!str_contains($rendered,'<script>'),'Legacy snapshot rendering remains compatible and escaped');
+echo "PASS: $total combined insight/unit checks\n";

@@ -1,0 +1,25 @@
+<?php
+require __DIR__.'/unit.php';
+$result=SeoFiles::sitemap('https://example.com/',"https://example.com/\nhttps://example.com/?a=1&b=2\nhttps://example.com/",'2026-01-02');
+$xml=new DOMDocument();check($xml->loadXML($result['reply']),'Generated sitemap is valid XML');
+check($xml->documentElement->namespaceURI==='http://www.sitemaps.org/schemas/sitemap/0.9','Sitemap namespace');
+check($result['count']===2&&$xml->getElementsByTagName('url')->length===2,'Duplicate sitemap URLs removed');
+check($xml->getElementsByTagName('loc')->item(1)->textContent==='https://example.com/?a=1&b=2','XML escaping preserves query parameters');
+check($xml->getElementsByTagName('lastmod')->item(0)->textContent==='2026-01-02','Explicit last modified date');
+check(!str_contains(SeoFiles::sitemap('https://example.com','https://example.com')['reply'],'lastmod'),'No invented last modified date');
+foreach(['https://other.example/','http://example.com/','https://example.com/#part','https://user:pass@example.com/','javascript:alert(1)','https://example.com/a b','https://example.com/%zz'] as $url)rejects(fn()=>SeoFiles::sitemap('https://example.com/',$url),'Reject invalid or out-of-scope URL '.$url);
+rejects(fn()=>SeoFiles::sitemap('https://example.com/',''),'Reject empty sitemap');
+rejects(fn()=>SeoFiles::sitemap('https://example.com/','https://example.com/','2026-02-30'),'Reject invalid last modified date');
+rejects(fn()=>SeoFiles::sitemap('https://example.com/','https://example.com/','2999-01-01'),'Reject future last modified date');
+rejects(fn()=>SeoFiles::sitemap('https://example.com/',implode("\n",array_map(fn($i)=>'https://example.com/'.$i,range(1,1001)))),'Enforce sitemap URL limit');
+check(SeoFiles::robots('*','','','')['reply']==="User-agent: *\nDisallow:\n",'Default robots file allows crawling');
+$robots=SeoFiles::robots("Googlebot\nBingbot","/private/\n/private/","/private/public/$",'https://example.com/sitemap.xml')['reply'];
+check(substr_count($robots,'Disallow:')===1&&str_contains($robots,'Allow: /private/public/$'),'Robots rules deduplicated, exceptions preserved');
+check(str_contains($robots,"User-agent: Googlebot\nUser-agent: Bingbot"),'Multiple crawlers share rule group');
+check(str_contains($robots,'Sitemap: https://example.com/sitemap.xml'),'Sitemap reference included');
+rejects(fn()=>SeoFiles::robots('Googlebot: secret','','',''),'Reject user-agent directive injection');
+rejects(fn()=>SeoFiles::robots('*',"/private/\nUser-agent: *",'',''),'Reject path directive injection');
+rejects(fn()=>SeoFiles::robots('*','private/','',''),'Reject paths without slash');
+rejects(fn()=>SeoFiles::robots('*','/private/#comment','',''),'Reject ambiguous path comments');
+rejects(fn()=>SeoFiles::robots('*','','','/sitemap.xml'),'Require absolute sitemap URLs');
+echo "PASS: $total total checks\n";

@@ -1,0 +1,36 @@
+@page{margin:32px 34px 48px}
+.performance-report{font-family:Arial,Helvetica,sans-serif;color:#25354a;line-height:1.55;max-width:1200px;margin:auto;font-size:13px}
+.performance-report .report-cover{background:#172c49;color:#fff;padding:42px 36px;margin:18px 0 32px;border-radius:12px;border-bottom:6px solid #f29440}
+.performance-report .report-kicker{color:#f4b67e;font-size:11px;letter-spacing:2px;font-weight:700;margin:0 0 24px}
+.performance-report .report-cover h1{color:#fff;font-size:46px;line-height:1.1;letter-spacing:-1.7px;margin:0 0 22px}
+.performance-report .report-domain{font-size:18px;color:#edf3fd;overflow-wrap:anywhere}
+.performance-report .report-period{font-size:12px;color:#c8d7eb;margin-top:24px}
+.performance-report .report-section{padding:8px 0 28px;border-bottom:1px solid #dce4ef;margin-bottom:26px}
+.performance-report .report-number{color:#5277a7;font-size:10px;letter-spacing:1.5px;font-weight:700}
+.performance-report h2{font-size:24px;line-height:1.25;color:#172c49;margin:8px 0 20px}
+.performance-report h3{font-size:16px;color:#294e77;margin:26px 0 12px}
+.performance-report .report-metrics{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:5px;margin:18px 0}
+.performance-report .report-metrics td{padding:16px 12px;background:#f0f5fb;border:1px solid #e0e8f2;border-radius:8px;vertical-align:top;word-wrap:break-word}
+.performance-report .report-metrics span,.performance-report .report-metrics small{display:block;font-size:10px;color:#62748c}
+.performance-report .report-metrics strong{display:block;font-size:31px;line-height:1.4;color:#1c426d}
+.performance-report .report-callout{background:#fff5e9;border-left:4px solid #ed984b;padding:18px 20px;border-radius:5px;margin:20px 0}
+.performance-report .report-callout p{margin:7px 0 0;color:#594937}
+.performance-report .report-note,.performance-report .report-empty{font-size:11px;color:#64758a;line-height:1.7}
+.performance-report .performance-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:11px;table-layout:fixed}
+.performance-report .performance-table th{background:#eaf0f8;color:#314e73;text-align:left;padding:10px 8px;border-bottom:2px solid #ccd9e9;font-size:10px}
+.performance-report .performance-table td{padding:10px 8px;border-bottom:1px solid #e0e7f0;vertical-align:top;overflow-wrap:anywhere;word-wrap:break-word}
+.performance-report .performance-table tr:nth-child(even) td{background:#f8fafd}
+.performance-report .report-next{padding-left:22px}.performance-report .report-next li{padding:8px 0}
+.performance-report .report-closing{background:#f0f5fb;padding:24px;color:#365275;border-radius:8px}
+.performance-report .report-closing p{font-size:11px}.performance-report .report-closing small{font-size:10px;color:#65768c}
+.report-pdf{font-family:DejaVu Sans,sans-serif;font-size:10px;margin:0}
+.report-pdf .performance-report{font-family:DejaVu Sans,sans-serif;font-size:10px}
+.report-pdf .report-cover{padding:30px;margin-top:10px}.report-pdf .report-cover h1{font-size:36px}.report-pdf .report-domain{font-size:13px}
+.report-pdf .report-section{margin-bottom:16px;padding-bottom:16px}.report-pdf h2{font-size:20px}.report-pdf h3{font-size:13px}
+.report-pdf .performance-table{font-size:8px}.report-pdf .performance-table th{font-size:8px}.report-pdf .performance-table td{padding:7px 5px}
+.report-pdf .report-metrics strong{font-size:23px}.report-pdf .report-metrics td{padding:10px 8px}
+.report-pdf .report-metrics span,.report-pdf .report-metrics small,.report-pdf .report-note{font-size:8px}
+.report-pdf .report-section h2,.report-pdf h3{page-break-after:avoid}.report-pdf tr,.report-pdf .report-cover,.report-pdf .report-callout{page-break-inside:avoid}
+.report-pdf .table-wrap{overflow:visible}.report-pdf thead{display:table-header-group}
+@media(max-width:600px){.performance-report .report-cover{padding:25px 20px}.performance-report .report-cover h1{font-size:34px}.performance-report .report-domain{font-size:14px}.performance-report h2{font-size:22px}.performance-report .report-metrics strong{font-size:22px}.performance-report .report-metrics td{padding:9px 5px}.performance-report .performance-table{min-width:650px}.performance-report .table-wrap{overflow-x:auto}.performance-report .report-metrics span,.performance-report .report-metrics small{font-size:9px}}
+@media print{.performance-report .performance-table{min-width:0;font-size:9px}.performance-report .table-wrap{overflow:visible}.performance-report tr{break-inside:avoid}.performance-report .report-cover{print-color-adjust:exact;-webkit-print-color-adjust:exact}.performance-report h2,.performance-report h3{break-after:avoid}}

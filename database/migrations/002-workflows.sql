@@ -1,0 +1,6 @@
+ALTER TABLE users ADD COLUMN session_version INT UNSIGNED NOT NULL DEFAULT 1;
+ALTER TABLE subscriptions ADD COLUMN is_trial TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE crawl_urls ADD COLUMN discovered_via VARCHAR(20) NOT NULL DEFAULT 'link';
+CREATE TABLE resource_checks (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, job_id INT UNSIGNED NOT NULL, url TEXT NOT NULL, url_hash CHAR(64) NOT NULL, kind ENUM('external','image') NOT NULL, http_status SMALLINT NULL, content_type VARCHAR(190) NULL, size_bytes BIGINT NULL, error TEXT, checked_at DATETIME NULL, UNIQUE(job_id,url_hash), FOREIGN KEY(job_id) REFERENCES crawl_jobs(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE invitations (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, owner_id INT UNSIGNED NOT NULL, website_id INT UNSIGNED NOT NULL, email VARCHAR(190) NOT NULL, token_hash CHAR(64) NOT NULL UNIQUE, expires_at DATETIME NOT NULL, accepted_at DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(owner_id) REFERENCES users(id), FOREIGN KEY(website_id) REFERENCES websites(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO settings(name,value) VALUES ('trial_plan_id','2'),('grace_days','0'),('ranking_frequency_hours','24'),('report_frequency_days','30');

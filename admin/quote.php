@@ -1,0 +1,1 @@
+<div class="card stack"><h3>Quote an SEO service</h3><form data-api="admin/quote"><div class="form-grid"><?php field('id','Service request ID','number');field('amount','Quoted price in paise (₹1 = 100 paise)','number');?></div><button class="button">Send quote to workspace</button></form></div>
