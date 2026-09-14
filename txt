@@ -1,0 +1,155 @@
+Add a new premium service module to my existing SEO Tool called **“Hire an SEO Expert”**.
+
+### 1. Home Page
+
+Create a highly attractive **Hire an SEO Expert / 90-Day SEO Growth Program** section on the homepage.
+
+Headline:\
+**Hire an SEO Expert & Grow Your Google Visibility**
+
+Subheading:\
+**Get a dedicated SEO expert, customized strategy, technical optimization, content planning and monthly progress tracking.**
+
+Do NOT claim guaranteed #1 Google ranking. Use wording such as **“90-Day SEO Growth Program”**, **“Improve Google visibility & rankings”**, and **“Results-focused SEO strategy.”**
+
+Add CTA buttons:
+
+- Get Free SEO Audit
+- Hire SEO Expert
+- View SEO Plans
+
+### 2. SEO Plans
+
+Create 3 pricing cards with monthly-equivalent savings clearly displayed:
+
+**3 Months**
+
+- Starter: ₹4,999
+- Growth: ₹7,999
+- Pro: ₹11,999
+
+**6 Months**
+
+- Starter: ₹8,999
+- Growth: ₹14,999
+- Pro: ₹21,999
+
+**1 Year**
+
+- Starter: ₹15,999
+- Growth: ₹27,999
+- Pro: ₹39,999
+
+Highlight **Growth** as “Most Popular”.
+
+Each plan should show features such as:
+
+- SEO Audit
+- Keyword Research
+- On-Page SEO
+- Technical SEO
+- Content Strategy
+- Competitor Analysis
+- Local SEO
+- Ranking Monitoring
+- Monthly SEO Report
+- Dedicated SEO Expert depending on plan
+
+Add “Choose Plan” CTA on every card.
+
+### 3. SEO Enquiry Form
+
+When a visitor clicks Hire SEO Expert / Choose Plan, open a professional enquiry form.
+
+Fields:
+
+- Full Name
+- Business Name
+- Website URL
+- Phone
+- Email
+- Target Location
+- Target Keywords
+- Selected Plan
+- Duration
+- Current SEO Problem
+- Message
+
+Save every enquiry in the database.
+
+### 4. Separate Admin Dashboard
+
+Create a completely separate **SEO Expert Leads Dashboard** inside admin.
+
+Dashboard statistics:
+
+- Total Enquiries
+- New Enquiries
+- Contacted
+- Audit Requested
+- Proposal Sent
+- Payment Pending
+- Active Clients
+- Closed Leads
+- Total Revenue
+
+Add charts for:
+
+- Enquiries by day/month
+- Plan selection
+- 3/6/12 month subscriptions
+- Lead status
+- Revenue
+
+### 5. Lead Management
+
+Admin can:
+
+- View enquiry
+- Edit enquiry
+- Change lead status
+- Add notes
+- Assign SEO expert
+- Add follow-up date
+- Add proposal amount
+- Mark payment status
+- Mark client as active/completed
+- Call client
+- WhatsApp client
+- Email client
+- Export leads to CSV
+
+Statuses:\
+**New → Contacted → Audit → Proposal → Payment Pending → Active → Completed → Lost**
+
+### 6. SEO Client Management
+
+After a lead becomes a client, create an SEO client profile containing:
+
+- Website
+- Plan
+- Start Date
+- End Date
+- Assigned SEO Expert
+- Target Keywords
+- Target Location
+- Monthly Tasks
+- Ranking Progress
+- Reports
+- Payment History
+- Client Notes
+
+Show a 90-day progress timeline:\
+**Month 1: Audit & Fix → Month 2: Optimize & Grow → Month 3: Scale & Improve**
+
+### 7. Design
+
+Match the existing SEO Tool design.
+
+Use a modern **white + black + orange** theme with premium SaaS styling.
+
+Make the pricing cards, CTA buttons, enquiry form, dashboard cards and charts responsive for desktop/mobile.
+
+Do not break or modify existing SEO Tool features. Integrate this as a new independent module with clean database tables, routes, controllers, admin pages and frontend sections.
+
+Also add SEO-friendly homepage content and schema-ready structure for the new “Hire SEO Expert” service.
