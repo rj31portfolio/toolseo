@@ -41,7 +41,8 @@ final class LiveChat {
  public static function leadInput(array $input,array $config): array {
   $lead=[];foreach(['name'=>120,'phone'=>40,'email'=>190,'service'=>190,'message'=>2000] as $key=>$max){$v=$input[$key]??'';if(!is_string($v)||mb_strlen($v)>$max)fail('Invalid '.$key.'.');$v=trim($v);$mode=$config['fields'][$key]??'optional';if($mode==='hidden')$v='';if($mode==='required'&&$v==='')fail(ucfirst($key).' is required.');$lead[$key]=$v;}
   if($lead['email']!==''&&!filter_var($lead['email'],FILTER_VALIDATE_EMAIL))fail('Enter a valid email address.');
-  if($lead['phone']!==''&&!preg_match('/^\+?[0-9 ()\-.]{7,40}$/D',$lead['phone']))fail('Enter a valid phone number.');
+  $digits=preg_replace('/\D/','',$lead['phone']);
+  if($lead['phone']!==''&&(!preg_match('/^\+?[0-9 ()\-.]{7,40}$/D',$lead['phone'])||strlen($digits)<7||strlen($digits)>15))fail('Enter a valid phone number with 7 to 15 digits.');
   if($lead['email']===''&&$lead['phone']==='')fail('Provide an email address or phone number.');
   if(($input['consent']??false)!==true)fail('Please agree to be contacted about your request.');return $lead;
  }
@@ -49,6 +50,6 @@ final class LiveChat {
   if(!preg_match('/^[a-f0-9]{64}$/D',$token))fail('Start a new conversation.',401);
   $c=row('SELECT * FROM chat_conversations WHERE widget_id=? AND token_hash=? AND origin=? AND expires_at>NOW()'.($lock?' FOR UPDATE':''),[$w['id'],hash('sha256',$token),$origin]);if(!$c)fail('This conversation expired. Start a new chat.',401);return $c;
  }
- public static function history(int $id): array {return rows('SELECT id,role,body,created_at FROM chat_messages WHERE conversation_id=? ORDER BY id LIMIT 300',[$id]);}
+ public static function history(int $id,int $after=0): array {return rows('SELECT id,role,body,created_at FROM chat_messages WHERE conversation_id=? AND id>? ORDER BY id LIMIT 300',[$id,$after]);}
  public static function message(int $id,string $role,string $body,?string $client=null): void {query('INSERT INTO chat_messages(conversation_id,role,body,client_id) VALUES (?,?,?,?)',[$id,$role,$body,$client]);}
 }

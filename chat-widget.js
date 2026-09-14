@@ -19,6 +19,8 @@
  function boot(data){
   configuration=data;const c=data.config;
   host.classList.add(c.position,c.size,c.button_style);if(demo)host.classList.add('inline');if(!c.mobile)host.classList.add('hide-mobile');if(!c.desktop)host.classList.add('hide-desktop');host.style.setProperty('--chat-primary',c.color);
+  const rgb=c.color.slice(1).match(/../g).map(hex=>{const channel=parseInt(hex,16)/255;return channel<=.04045?channel/12.92:((channel+.055)/1.055)**2.4;});
+  host.style.setProperty('--chat-on-primary',rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722>.179?'#102a22':'#ffffff');
   const launcher=el('button',c.button_style==='circle'?'✦':'Let’s chat','launcher');launcher.type='button';launcher.setAttribute('aria-label','Open '+data.name+' chat');launcher.setAttribute('aria-expanded','false');
   const panel=el('section',undefined,'panel');panel.hidden=true;panel.setAttribute('aria-label',data.name+' chat');
   const heading=el('header',undefined,'heading'),avatar=el('span',c.avatar||'Chat','avatar');
@@ -39,13 +41,13 @@
   function showLead(show){leadForm.hidden=!show;log.hidden=show;form.hidden=show;tools.hidden=show;if(show)leadForm.querySelector('input')?.focus();}
   function render(result){
    if(result.token){token=result.token;if(!demo)try{sessionStorage.setItem(storageKey,token);}catch{}}
-   messages=result.messages||[];mode=result.mode||'bot';leadCaptured=!!result.lead_captured;
+   messages=result.partial?[...messages,...(result.messages||[]).filter(next=>!messages.some(old=>old.id===next.id))]:(result.messages||[]);mode=result.mode||'bot';leadCaptured=!!result.lead_captured;
    for(const message of messages){if(log.querySelector('[data-id="'+Number(message.id)+'"]'))continue;const bubble=el('div',undefined,'bubble '+message.role);bubble.dataset.id=message.id;bubble.append(el('small',message.role==='visitor'?'You':message.role==='agent'?'Team':message.role==='system'?'Update':'Assistant'),el('div',message.body));log.append(bubble);log.scrollTop=log.scrollHeight;}
    contact.hidden=leadCaptured;send.disabled=mode==='closed';input.disabled=mode==='closed';if(mode==='closed')status.textContent='Conversation closed. Select New chat to continue.';else if(mode==='human')status.textContent='Your conversation is with the team. Replies appear here.';
    if(!leadCaptured&&messages.filter(m=>m.role==='visitor').length>=2)contact.textContent='Ready for the next step? Leave your details';
   }
-  async function poll(){if(!opened||busy||polling||demo||!token||document.hidden)return;polling=true;try{render(await request('poll'));}catch(error){status.textContent=error.message;}finally{polling=false;}}
-  async function open(){opened=true;panel.hidden=false;launcher.hidden=true;launcher.setAttribute('aria-expanded','true');input.focus();if(!token){busy=true;status.textContent='Connecting…';try{render(await request('start'));status.textContent='';}catch(error){status.textContent=error.name==='AbortError'?'Connection timed out. Try opening chat again.':error.message;}finally{busy=false;}}else await poll();clearInterval(timer);timer=setInterval(poll,5000);}
+  async function poll(){if(!host.isConnected){clearInterval(timer);return;}if(!opened||busy||polling||demo||!token||document.hidden)return;polling=true;try{render(await request('poll',{after:Number(messages.at(-1)?.id||0)}));}catch(error){status.textContent=error.message;}finally{polling=false;}}
+  async function open(){opened=true;panel.hidden=false;launcher.hidden=true;launcher.setAttribute('aria-expanded','true');if(!demo)input.focus();if(!token){busy=true;status.textContent='Connecting…';try{render(await request('start'));status.textContent='';}catch(error){status.textContent=error.name==='AbortError'?'Connection timed out. Try opening chat again.':error.message;}finally{busy=false;}}else await poll();clearInterval(timer);if(!demo)timer=setInterval(poll,5000);}
   function hide(){opened=false;panel.hidden=true;launcher.hidden=false;launcher.setAttribute('aria-expanded','false');clearInterval(timer);launcher.focus();}
   launcher.addEventListener('click',open);close.addEventListener('click',()=>{if(!leadCaptured&&messages.some(m=>m.role==='visitor')&&leadForm.hidden){showLead(true);status.textContent='Would you like a follow-up before leaving? You can close chat without submitting.';}else hide();});
   panel.addEventListener('keydown',event=>{if(event.key==='Escape')hide();});contact.addEventListener('click',()=>showLead(true));back.addEventListener('click',()=>{showLead(false);input.focus();});
