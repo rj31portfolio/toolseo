@@ -10,7 +10,7 @@ final class InstagramDownloader {
   $url=trim($url);
   if(strlen($url)>2048||preg_match('/[\x00-\x20\x7f\\\\]/',$url))throw new InvalidArgumentException('Paste a valid public Instagram post or reel URL.');
   $p=parse_url($url);
-  if(!$p||strtolower($p['scheme']??'')!=='https'||!in_array(strtolower($p['host']??''),['instagram.com','www.instagram.com'],true)||isset($p['user'])||isset($p['pass'])||isset($p['port'])||!preg_match('~^/(p|reel)/([A-Za-z0-9_-]{1,64})/?$~D',$p['path']??'', $match))throw new InvalidArgumentException('Use https://www.instagram.com/p/…/ or https://www.instagram.com/reel/…/. Profiles, stories and private links are not supported.');
+  if(!$p||strtolower($p['scheme']??'')!=='https'||!in_array(strtolower($p['host']??''),['instagram.com','www.instagram.com'],true)||isset($p['user'])||isset($p['pass'])||isset($p['port'])||!preg_match('~^/(?:[A-Za-z0-9_][A-Za-z0-9_.]{0,29}/)?(p|reel)/([A-Za-z0-9_-]{1,64})/?$~D',$p['path']??'', $match))throw new InvalidArgumentException('Use https://www.instagram.com/p/…/ or https://www.instagram.com/reel/…/. Profiles, stories and private links are not supported.');
   return 'https://www.instagram.com/'.$match[1].'/'.$match[2].'/';
  }
  public static function mediaUrl(string $url): string {
@@ -20,7 +20,9 @@ final class InstagramDownloader {
   return $url;
  }
  public static function pageAllowed(string $target,string $original): bool {
-  try{return self::normalize($target)===$original;}catch(Throwable){return false;}
+  // A shortcode identifies the media. Instagram may add the author to its
+  // canonical URL or represent a reel under /p/ without changing that media.
+  try{return basename(rtrim(self::normalize($target),'/'))===basename(rtrim(self::normalize($original),'/'));}catch(Throwable){return false;}
  }
  public static function extract(string $url,?callable $request=null): array {
   $url=self::normalize($url);
@@ -38,14 +40,18 @@ final class InstagramDownloader {
   if(!$loaded)throw new RuntimeException('Instagram returned an unreadable page.');
   $xpath=new DOMXPath($doc);$meta=[];
   foreach($xpath->query('//head/meta[@property or @name]') as $tag){$key=strtolower($tag->getAttribute('property')?:$tag->getAttribute('name'));$meta[$key][]=trim($tag->getAttribute('content'));}
-  $heading=strtolower(($meta['og:title'][0]??'').' '.$xpath->evaluate('string(//title)').' '.$xpath->evaluate('string(//h1)'));
-  if(preg_match('/log\s*in|sign\s*in|captcha|challenge|private account|account is private|page isn.t available|content isn.t available/',$heading)||$xpath->query('//input[@type="password"]')->length||preg_match('/"is_private"\s*:\s*true/',$html))throw new RuntimeException('Instagram requires login or restricts this content. Private accounts, CAPTCHA and access controls are not supported.');
+  $heading=strtolower(($meta['og:title'][0]??'').' '.$xpath->evaluate('string(//title)').' '.$xpath->evaluate('string(//h1)').' '.$xpath->evaluate('string(//h2)'));
+  $restrictedForm=false;foreach($xpath->query('//form[@action]') as $form)if(preg_match('~/accounts/login|/challenge|/checkpoint~i',$form->getAttribute('action')))$restrictedForm=true;
+  if(preg_match('/log\s*in|sign\s*in|captcha|challenge|private account|account is private|page isn.t available|content isn.t available/',$heading)||$restrictedForm||$xpath->query('//input[@type="password"]')->length||preg_match('/"is_private"\s*:\s*true/',$html))throw new RuntimeException('Instagram requires login or restricts this content. Private accounts, CAPTCHA and access controls are not supported.');
+  if(in_array(strtolower($meta['og:type'][0]??''),['profile'],true)||trim($heading)==='instagram')throw new RuntimeException('Instagram returned a generic page instead of public post metadata.');
   if(isset($meta['og:url'][0])&&!self::pageAllowed($meta['og:url'][0],$url))throw new RuntimeException('Instagram returned a different page instead of the requested public post.');
   $find=function(string $type)use($meta):?string{foreach([$type.':secure_url',$type,$type.':url'] as $key)foreach($meta[$key]??[] as $candidate)try{return self::mediaUrl($candidate);}catch(RuntimeException){}return null;};
   $image=$find('og:image');$video=$find('og:video');
   if(!$image&&!$video)throw new RuntimeException('No downloadable og:image or og:video metadata was available. Instagram may require login, block automated access or omit the media.');
-  $reel=str_contains($url,'/reel/');
-  return ['title'=>mb_substr($meta['og:title'][0]??'Instagram media',0,500),'source'=>$url,'thumbnail'=>$image,'type'=>$video?'video':'image','media'=>$video??$image,'notice'=>$video?'Only the video exposed in public page metadata is available.':($reel?'Only a preview image was exposed. The reel video is unavailable; this downloads the preview image.':'Only the image exposed in public page metadata is available; carousel items are not enumerated.')];
+  $reel=str_contains(self::normalize($url),'/reel/')||str_contains($meta['og:url'][0]??'','/reel/');
+  $expectsVideo=$reel||$video!==null||str_starts_with(strtolower($meta['og:type'][0]??''),'video');
+  $downloadable=!$expectsVideo||$video!==null;
+  return ['title'=>mb_substr($meta['og:title'][0]??'Instagram media',0,500),'source'=>$url,'thumbnail'=>$image,'content_kind'=>$reel?'reel':'post','type'=>$expectsVideo?'video':'image','downloadable'=>$downloadable,'media'=>$expectsVideo?$video:$image,'notice'=>!$downloadable?'Instagram exposed only a thumbnail, not the video. The preview is shown below, but this reel or video cannot be downloaded from its public metadata.':($video?'The video exposed in public page metadata is available to download.':'The post image exposed in public page metadata is available; carousel items are not enumerated.')];
  }
  /** Fetch only a media URL previously extracted by the server, with bounded storage and verified MIME. */
  public static function download(string $url,string $type): array {
@@ -59,11 +65,16 @@ final class InstagramDownloader {
    if($ok===false){fclose($file);throw new RuntimeException($overflow?'The media exceeds the 50 MB download limit.':'The media download timed out or could not be completed.');}
    if($status>=300&&$status<400&&isset($headers['location'])){fclose($file);$url=SafeHttp::normalize($headers['location'],$url);continue;}
    if($status!==200||!$bytes){fclose($file);throw new RuntimeException('Instagram blocked the media or its link expired. Check the post again; restricted media cannot be downloaded.');}
-   rewind($file);$prefix=fread($file,8192);$mime=(new finfo(FILEINFO_MIME_TYPE))->buffer($prefix);rewind($file);
-   $allowed=$type==='video'?['video/mp4'=>'mp4','video/webm'=>'webm']:['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];
-   if(!isset($allowed[$mime])){fclose($file);throw new RuntimeException('The server returned an unsupported file instead of the expected media.');}
-   return ['file'=>$file,'bytes'=>$bytes,'mime'=>$mime,'extension'=>$allowed[$mime]];
+   rewind($file);$prefix=fread($file,8192);rewind($file);
+   try{$format=self::fileFormat($prefix,$type);}catch(Throwable $e){fclose($file);throw $e;}
+   return ['file'=>$file,'bytes'=>$bytes]+$format;
   }
   throw new RuntimeException('The media server redirected too many times.');
+ }
+ public static function fileFormat(string $prefix,string $type): array {
+  $mime=(new finfo(FILEINFO_MIME_TYPE))->buffer($prefix);
+  $allowed=$type==='video'?['video/mp4'=>'mp4','video/webm'=>'webm']:['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/gif'=>'gif'];
+  if(!isset($allowed[$mime]))throw new RuntimeException('The server returned an unsupported file instead of the expected media.');
+  return ['mime'=>$mime,'extension'=>$allowed[$mime]];
  }
 }
