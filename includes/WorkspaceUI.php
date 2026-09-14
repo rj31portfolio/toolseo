@@ -36,6 +36,8 @@ final class WorkspaceUI {
  }
  public static function directory(): array {
   $items=self::catalog();foreach(['schema','sitemap-generator','robots-generator'] as $id)unset($items[$id]);
+  $service=DomainDns::settings();
+  if($service['enabled']&&$service['visible'])$items[$service['slug']]=['Discover',$service['name'],$service['description'],'Enter a domain. No login required.','Public registration details and DNS records.','globe'];
   return array_merge($items,self::utilities());
  }
  public static function icon(string $name): string {

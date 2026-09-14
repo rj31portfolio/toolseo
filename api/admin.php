@@ -1,5 +1,10 @@
 <?php
 $admin=require_admin();$op=substr($action,6);
+if($op==='domain-dns-service'){
+ $data=['name'=>required_input('name',120),'description'=>required_input('description',1000),'enabled'=>enum_input('enabled',['0','1'])==='1','visible'=>enum_input('visible',['0','1'])==='1'];
+ try{$data['slug']=DomainDns::validateSlug(required_input('slug',80));}catch(InvalidArgumentException $e){fail($e->getMessage());}
+ db()->beginTransaction();query('INSERT INTO settings(name,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)',['domain_dns_service',json_encode($data,JSON_THROW_ON_ERROR)]);audit_log('admin.domain_dns.updated',$data);db()->commit();json_response(['redirect'=>url('/admin/tools')],'Domain & DNS Checker settings saved.');
+}
 require ROOT.'/api/admin-extended.php';
 if(in_array($op,['user','plan','coupon','settings','page','backup']))require_admin(true);
 if($op==='user'){$id=(int)($_POST['id']??0);$role=enum_input('role',['super_admin','admin','team_member','customer']);$active=enum_input('active',['0','1']);if($id===$admin['id'])fail('You cannot change your own administrative access.');if(!row('SELECT id FROM users WHERE id=?',[$id]))fail('User not found.',404);query('UPDATE users SET role=?,active=? WHERE id=?',[$role,(int)$active,$id]);query('DELETE FROM user_roles WHERE user_id=?',[$id]);query('INSERT INTO user_roles(user_id,role_id) SELECT ?,id FROM roles WHERE name=?',[$id,$role]);audit_log('admin.user.updated',['id'=>$id,'role'=>$role,'active'=>$active]);json_response();}
