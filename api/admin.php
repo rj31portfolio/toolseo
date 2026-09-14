@@ -1,5 +1,6 @@
 <?php
 $admin=require_admin();$op=substr($action,6);
+if($op==='chat-install'){require_admin(true);LiveChat::migrate();audit_log('admin.chat.installed');json_response(['redirect'=>url('/admin/tools')],'Chat storage installed.');}
 if($op==='instagram-service'){
  $data=['name'=>required_input('name',120),'description'=>required_input('description',1000),'enabled'=>enum_input('enabled',['0','1'])==='1','visible'=>enum_input('visible',['0','1'])==='1'];
  try{$data['slug']=DomainDns::validateSlug(required_input('slug',80));}catch(InvalidArgumentException $e){fail($e->getMessage());}

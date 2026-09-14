@@ -1,6 +1,7 @@
 <?php
 final class WorkspaceUI {
  public static function catalog(): array {return [
+  'live-chat'=>['Manage','Live Chat & Lead Capture','Turn visitor conversations into qualified leads.','Create a widget, add business knowledge and embed one script.','Conversations, lead details, scores and follow-up in your dashboard.','people'],
   'audit'=>['Discover','Website audit','Find technical and content issues on your website.','Run an audit, then review issues in priority order.','A health score, affected pages and recommended fixes.','scan'],
   'local-seo'=>['Discover','GBP / Local SEO analyzer','Audit manually entered business profile and local website details.','Enter your profile, reviews, hours and comparison details.','A local readiness score, recommendations, schema, saved history and PDF report.','globe'],
   'pages'=>['Discover','Page analysis','Understand what each crawled page needs.','Open a page to review its title, headings and metadata.','Page details and suggestions you can act on.','file'],

@@ -9,6 +9,7 @@ if($method==='GET'){
 }
 if($method!=='POST')fail('Method not allowed.',405);check_csrf();rate_limit('api:'.$user['id'],120,60);
 if(setting('require_verification',false) && !$user['verified_at'])fail('Verify your email before making changes.',403);
+if(str_starts_with($action,'chat/')){require ROOT.'/api/chat-manage.php';exit;}
 if($action==='website'){
  if($user['role']==='team_member')fail('Team members cannot create projects.',403);
  try{$domain=SafeHttp::normalize(required_input('domain',500));SafeHttp::resolve(parse_url($domain,PHP_URL_HOST));}catch(Throwable $e){fail($e->getMessage());}

@@ -17,6 +17,8 @@ if(setting('maintenance',false) && !is_admin() && !in_array($section,['login','l
 if($section==='api/v1/domain-dns'){require ROOT.'/api/domain-dns.php';exit;}
 if(in_array($section,['api/v1/instagram-downloader','api/v1/instagram-media'],true)){require ROOT.'/api/instagram-downloader.php';exit;}
 if(str_starts_with($section,'api/v1/')){require ROOT.'/api/router.php';exit;}
+if(str_starts_with($section,'api/chat/')){require ROOT.'/api/chat-public.php';exit;}
+if($section==='live-chat'){require ROOT.'/dashboard/index.php';exit;}
 if(in_array($section,['login','register','forgot-password','reset-password','verify-email','logout'])){if($_SERVER['REQUEST_METHOD']==='POST')auth_action($section);if($section==='logout')fail('Use the sign-out button.',405);$route=$section;require ROOT.'/auth/page.php';exit;}
 if($section===''){require ROOT.'/public/home.php';exit;}
 $domainService=DomainDns::settings();
