@@ -15,11 +15,14 @@ if(!isset($_SESSION['user_id']) && isset($_COOKIE['seo_remember']) && is_file(RO
 }
 if(setting('maintenance',false) && !is_admin() && !in_array($section,['login','logout']))fail('Scheduled maintenance is in progress. Please return shortly.',503);
 if($section==='api/v1/domain-dns'){require ROOT.'/api/domain-dns.php';exit;}
+if(in_array($section,['api/v1/instagram-downloader','api/v1/instagram-media'],true)){require ROOT.'/api/instagram-downloader.php';exit;}
 if(str_starts_with($section,'api/v1/')){require ROOT.'/api/router.php';exit;}
 if(in_array($section,['login','register','forgot-password','reset-password','verify-email','logout'])){if($_SERVER['REQUEST_METHOD']==='POST')auth_action($section);if($section==='logout')fail('Use the sign-out button.',405);$route=$section;require ROOT.'/auth/page.php';exit;}
 if($section===''){require ROOT.'/public/home.php';exit;}
 $domainService=DomainDns::settings();
 if($section===$domainService['slug']){if(!$domainService['enabled'])fail('This tool is currently disabled.',404);require ROOT.'/public/domain-dns.php';exit;}
+$instagramService=InstagramDownloader::settings();
+if($section===$instagramService['slug']){if(!$instagramService['enabled'])fail('This tool is currently disabled.',404);require ROOT.'/public/instagram-downloader.php';exit;}
 if(in_array($section,['features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy','cookie-policy'])){require ROOT.'/public/page.php';exit;}
 if($section==='sitemap.xml'){header('Content-Type: application/xml');echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';foreach(['','features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy'] as $p)echo '<url><loc>'.e(cfg('APP_URL').'/'.$p).'</loc></url>';echo '</urlset>';exit;}
 if(str_starts_with($section,'admin')){require ROOT.'/admin/index.php';exit;}

@@ -38,6 +38,8 @@ final class WorkspaceUI {
   $items=self::catalog();foreach(['schema','sitemap-generator','robots-generator'] as $id)unset($items[$id]);
   $service=DomainDns::settings();
   if($service['enabled']&&$service['visible'])$items[$service['slug']]=['Discover',$service['name'],$service['description'],'Enter a domain. No login required.','Public registration details and DNS records.','globe'];
+  $instagram=InstagramDownloader::settings();
+  if($instagram['enabled']&&$instagram['visible'])$items[$instagram['slug']]=['Marketing Tools',$instagram['name'],$instagram['description'],'Paste a public Instagram post or reel URL.','Available public image or video metadata and download.','file'];
   return array_merge($items,self::utilities());
  }
  public static function icon(string $name): string {

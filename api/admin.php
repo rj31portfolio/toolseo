@@ -1,8 +1,15 @@
 <?php
 $admin=require_admin();$op=substr($action,6);
+if($op==='instagram-service'){
+ $data=['name'=>required_input('name',120),'description'=>required_input('description',1000),'enabled'=>enum_input('enabled',['0','1'])==='1','visible'=>enum_input('visible',['0','1'])==='1'];
+ try{$data['slug']=DomainDns::validateSlug(required_input('slug',80));}catch(InvalidArgumentException $e){fail($e->getMessage());}
+ if($data['slug']===DomainDns::settings()['slug'])fail('This slug is already used by the Domain & DNS Checker.');
+ db()->beginTransaction();query('INSERT INTO settings(name,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)',['instagram_downloader_service',json_encode($data,JSON_THROW_ON_ERROR)]);audit_log('admin.instagram_service.updated',$data);db()->commit();json_response(['redirect'=>url('/admin/tools')],'Instagram downloader settings saved.');
+}
 if($op==='domain-dns-service'){
  $data=['name'=>required_input('name',120),'description'=>required_input('description',1000),'enabled'=>enum_input('enabled',['0','1'])==='1','visible'=>enum_input('visible',['0','1'])==='1'];
  try{$data['slug']=DomainDns::validateSlug(required_input('slug',80));}catch(InvalidArgumentException $e){fail($e->getMessage());}
+ if($data['slug']===InstagramDownloader::settings()['slug'])fail('This slug is already used by the Instagram downloader.');
  db()->beginTransaction();query('INSERT INTO settings(name,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)',['domain_dns_service',json_encode($data,JSON_THROW_ON_ERROR)]);audit_log('admin.domain_dns.updated',$data);db()->commit();json_response(['redirect'=>url('/admin/tools')],'Domain & DNS Checker settings saved.');
 }
 require ROOT.'/api/admin-extended.php';
