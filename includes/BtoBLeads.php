@@ -1,8 +1,28 @@
 <?php
-/** Authorized lead imports only. No marketplace crawler or live provider is configured. */
+/** Business lead management and search-provider discovery. */
 final class BtoBLeads {
  public const SOURCES = ['1'=>'IndiaMART','2'=>'TradeIndia'];
  public const FIELDS = ['business_name'=>190,'category'=>190,'city'=>120,'state'=>120,'website'=>500,'email'=>190,'phone'=>40,'provenance'=>1000];
+ public static function discover(array $data,?callable $search=null): array {
+  $keyword=self::text($data,'keyword',190);$location=self::text($data,'location',190);$source=self::text($data,'source_id',10);
+  if($keyword===''||$location==='')fail('Enter a keyword and location.');
+  if(!isset(self::SOURCES[$source]))fail('Choose IndiaMART or TradeIndia.');
+  if(!value('SELECT id FROM lead_sources WHERE id=? AND enabled=1',[$source]))fail('This lead source is disabled.');
+  $domain=$source==='1'?'indiamart.com':'tradeindia.com';
+  // Quote user terms so search operators cannot override the chosen marketplace.
+  $quote=static fn(string $s):string=>'"'.str_replace(['"','\\'], ' ', $s).'"';
+  try{$data=($search??[Serp::class,'search'])('site:'.$domain.' '.$quote($keyword).' '.$quote($location),'IN','en');}
+  catch(RuntimeException $e){fail($e->getMessage(),502);}
+  $results=[];$seen=[];
+  foreach(Serp::organic($data) as $r){
+   $host=parse_url($r['url'],PHP_URL_HOST);
+   if($host!==$domain&&!str_ends_with($host,'.'.$domain))continue;
+   if(isset($seen[$r['url']])||trim($r['title'])==='')continue;
+   $seen[$r['url']]=true;
+   $results[]=['title'=>$r['title'],'url'=>$r['url'],'snippet'=>$r['snippet'],'source'=>self::SOURCES[$source],'source_id'=>$source];
+  }
+  return $results;
+ }
  public static function ready(): bool { return (bool)value("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='lead_activity'"); }
  public static function migrate(): void {
   foreach(preg_split('/;\s*(?:\r?\n|$)/',file_get_contents(ROOT.'/database/migrations/009-b2b-leads.sql')) as $sql) if(trim($sql)!=='') query($sql);

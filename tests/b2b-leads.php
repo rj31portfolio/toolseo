@@ -11,6 +11,21 @@ function rejectLead(callable $fn,string $label): void {try{$fn();}catch(HttpErro
 try {
  foreach([ROOT.'/database/database.sql',...glob(ROOT.'/database/migrations/*.sql')] as $file)foreach(preg_split('/;\s*(?:\r?\n|$)/',file_get_contents($file)) as $sql)if(trim($sql)!=='')query($sql);
  BtoBLeads::migrate();verifyLead(BtoBLeads::ready(),'Migration installs and reruns safely');
+ $discoveryInput=['keyword'=>'Packaging','location'=>'Mumbai','source_id'=>'1'];
+ $found=BtoBLeads::discover($discoveryInput,static function($query,$country,$language){
+  verifyLead($query==='site:indiamart.com "Packaging" "Mumbai"'&&$country==='IN'&&$language==='en','Discovery scopes search to marketplace and location');
+  return ['organicResults'=>[
+   ['title'=>'Fixture business','link'=>'https://www.indiamart.com/fixture/','snippet'=>'Packaging supplier'],
+   ['title'=>'Duplicate','link'=>'https://www.indiamart.com/fixture/'],
+   ['title'=>'Wrong domain','link'=>'https://indiamart.com.example.org/'],
+   ['title'=>'Unsafe','link'=>'javascript:alert(1)']
+  ]];
+ });
+ verifyLead(count($found)===1&&$found[0]['source_id']==='1'&&$found[0]['snippet']==='Packaging supplier','Discovery filters unsafe, duplicate and unrelated results');
+ verifyLead((int)value('SELECT COUNT(*) FROM leads')===0,'Discovery does not save unreviewed search results');
+ rejectLead(fn()=>BtoBLeads::discover(array_replace($discoveryInput,['keyword'=>''])),'Discovery requires keyword');
+ rejectLead(fn()=>BtoBLeads::discover(array_replace($discoveryInput,['source_id'=>'3'])),'Discovery rejects unsupported source');
+ rejectLead(fn()=>BtoBLeads::discover($discoveryInput,static function(){throw new RuntimeException('Provider unavailable');}),'Discovery surfaces provider errors');
  $record=['source_id'=>'1','business_name'=>'Fixture Packaging','category'=>'Packaging','city'=>'Mumbai','state'=>'Maharashtra','website'=>'https://example.com/','email'=>'public@example.com','phone'=>'+91 2222222222','provenance'=>'Isolated automated test fixture'];
  $valid=BtoBLeads::validate($record);verifyLead(BtoBLeads::scoring($valid)['score']===80,'Contact completeness scoring');
  verifyLead(BtoBLeads::scoring($valid+['website_available'=>1,'seo_score'=>0])['score']===100,'SEO opportunity scoring bounded');

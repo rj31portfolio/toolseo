@@ -17,7 +17,11 @@ business_name,category,city,state,website,email,phone
 
 Business name and city or state are required. Source and provenance come from the import form. Validation finishes before insertion; any invalid row rejects the import. A normalized business name + city + state fingerprint prevents duplicates across both sources, including concurrent imports. Existing records are skipped without overwriting their data. Shared websites, emails or phone strings are flagged by the duplicate filter for manual review; legitimate branches can share contacts. Slight spelling/address variations may require manual review.
 
-No IndiaMART / TradeIndia crawler or external provider is connected. No login automation, CAPTCHA handling or anti-bot bypass exists. A future approved provider can call the authenticated, CSRF-protected save endpoint within this application or reuse `BtoBLeads::validate()` / `save()` in an authorized server-side adapter. Source attribution and provenance are mandatory; do not treat arbitrary API results as approved for public display.
+## Live discovery
+
+Use **Extract leads** in the admin module with a keyword, location and marketplace. Discovery reuses the HasData connection in Administration > Settings to search Google-indexed marketplace listings. It uses provider credits and returns up to ten search results, filtered to the selected marketplace and deduplicated by URL. Missing configuration and provider errors appear in the interface. Admin authentication, CSRF and a five-searches-per-five-minutes limit apply.
+
+Open a result to verify business details, then choose **Review and add lead**. This starts a new lead with its source and listing URL recorded as provenance. Fill in the verified business name, location and available contacts and save. Search titles may describe category pages, so they are not automatically saved as business names; unpublished contacts are not inferred. Discovery does not crawl marketplace pages or automatically publish results. The homepage continues to search only the five approved previews.
 
 ## Public preview
 

@@ -8,7 +8,12 @@ if($section==='api/v1/b2b-demo'){
 }
 $user=require_admin();check_csrf();rate_limit('b2b-admin:'.$user['id'],60,60);
 if(!BtoBLeads::ready())fail('Run cron/migrate-b2b-leads.php to install lead storage.',503);
-$action=enum_input('operation',['save','import','delete','favorite','unfavorite','note','tags','demo','analyze','export']);
+$action=enum_input('operation',['discover','save','import','delete','favorite','unfavorite','note','tags','demo','analyze','export']);
+if($action==='discover'){
+ rate_limit('b2b-discover:'.$user['id'],5,300);session_write_close();set_time_limit(120);
+ $results=BtoBLeads::discover($_POST);
+ json_response(['results'=>$results],$results?'Review the search results before saving a business.':'No matching indexed listings found. Try a broader keyword or nearby city.');
+}
 $idInput=input('id',18,'0');if(!ctype_digit($idInput))fail('Invalid lead ID.');$id=(int)$idInput;$uid=(int)$user['id'];$message='Lead updated.';
 if($action==='import'){
  if(input('authorized',1)!=='1')fail('Confirm that you are authorized to import this data.');
