@@ -5,3 +5,5 @@ $marker=setting('migration_002',false);if(!$marker){foreach(preg_split('/;\s*(?:
 if(!setting('migration_003',false)){db()->exec(file_get_contents(ROOT.'/database/migrations/003-recommendations.sql'));query("INSERT INTO settings(name,value) VALUES ('migration_003','true')");echo "Migration 003 applied.\n";}
 if(!setting('migration_004',false)){foreach(preg_split('/;\s*(?:\r?\n|$)/',file_get_contents(ROOT.'/database/migrations/004-services.sql')) as $sql)if(trim($sql)!=='')db()->exec($sql);query("INSERT INTO settings(name,value) VALUES ('migration_004','true')");echo "Migration 004 applied.\n";}
 if(!setting('migration_005',false)){db()->exec(file_get_contents(ROOT.'/database/migrations/005-credit-recovery.sql'));query("INSERT INTO settings(name,value) VALUES ('migration_005','true')");echo "Migration 005 applied.\n";}
+
+BtoBLeads::migrate();echo "B2B Lead Extractor migration applied.\n";

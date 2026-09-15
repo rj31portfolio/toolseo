@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS leads (
  FOREIGN KEY (source_id) REFERENCES lead_sources(id),
  CONSTRAINT lead_demo_slot CHECK (demo_slot BETWEEN 1 AND 5),
  INDEX lead_source_date(source_id,created_at),
- INDEX lead_score(score), INDEX lead_location(city,state), INDEX lead_created(created_at)
+ INDEX lead_score(score), INDEX lead_location(city,state), INDEX lead_created(created_at),
+ INDEX lead_email(email), INDEX lead_phone(phone), INDEX lead_website(website(190))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS lead_searches (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

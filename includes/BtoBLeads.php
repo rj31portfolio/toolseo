@@ -6,6 +6,7 @@ final class BtoBLeads {
  public static function ready(): bool { return (bool)value("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='lead_activity'"); }
  public static function migrate(): void {
   foreach(preg_split('/;\s*(?:\r?\n|$)/',file_get_contents(ROOT.'/database/migrations/009-b2b-leads.sql')) as $sql) if(trim($sql)!=='') query($sql);
+  foreach(['lead_email'=>'email','lead_phone'=>'phone','lead_website'=>'website(190)'] as $name=>$column)if(!value('SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema=DATABASE() AND table_name=\'leads\' AND index_name=?',[$name]))query('ALTER TABLE leads ADD INDEX '.$name.' ('.$column.')');
  }
  public static function text(array $data,string $key,int $max): string {
   $v=$data[$key]??'';
@@ -115,14 +116,18 @@ final class BtoBLeads {
    if(!$pageGuard($lead['website']))fail('Website robots.txt does not permit this audit.');
    $response=SafeHttp::request($lead['website'],'GET',[],null,2,$pageGuard,10);
    $available=$response['status']>=200&&$response['status']<300;
-   if(!$available)fail('Website returned HTTP '.$response['status'].'. No SEO score was assigned.');
-   if(!str_contains(strtolower($response['headers']['content-type']??''),'text/html')||trim($response['body'])==='')fail('Website did not return an HTML page.');
-   $p=Crawler::parse($response,$origin);$issues=Audit::checks($p);$score=Audit::pageScore($p);
    $sitemap='Not checked (robots policy)';
-   if($pageGuard($origin.'/sitemap.xml')){try{$sm=SafeHttp::request($origin.'/sitemap.xml','GET',[],null,2,$pageGuard,8);$xml=new DOMDocument();$prev=libxml_use_internal_errors(true);$valid=$sm['status']===200&&!str_contains(strtoupper($sm['body']),'<!DOCTYPE')&&$xml->loadXML($sm['body'],LIBXML_NONET)&&in_array($xml->documentElement->localName,['urlset','sitemapindex'],true);libxml_clear_errors();libxml_use_internal_errors($prev);$sitemap=$valid?'Found at /sitemap.xml':'Not found at /sitemap.xml';}catch(Throwable){$sitemap='Could not verify /sitemap.xml';}}
-   $result=['seo_score'=>$score,'meta_title'=>$p['title'],'meta_description'=>$p['description'],'h1'=>$p['h1'],'sitemap'=>$sitemap,'robots'=>$robots['status']===200?'Found':'Not found (HTTP '.$robots['status'].')','ssl'=>str_starts_with($response['url'],'https://')?'HTTPS with verified certificate':'HTTP; no SSL','load_ms'=>$p['load_ms'],'mobile_viewport'=>$p['details']['viewport']?:'Missing','http_status'=>$response['status'],'issues'=>$issues,'scope'=>'Single-page audit using the existing SEO audit engine. Fetch timing and viewport checks are basic checks, not Core Web Vitals or a rendered mobile test.','prospect'=>$score<70?'SEO improvement opportunity':'Review issues before qualifying'];
+   if($available&&$pageGuard($origin.'/sitemap.xml')){try{$sm=SafeHttp::request($origin.'/sitemap.xml','GET',[],null,2,$pageGuard,8);$xml=new DOMDocument();$prev=libxml_use_internal_errors(true);$valid=$sm['status']===200&&!str_contains(strtoupper($sm['body']),'<!DOCTYPE')&&$xml->loadXML($sm['body'],LIBXML_NONET)&&in_array($xml->documentElement->localName,['urlset','sitemapindex'],true);libxml_clear_errors();libxml_use_internal_errors($prev);$sitemap=$valid?'Found at /sitemap.xml':'Not found at /sitemap.xml';}catch(Throwable){$sitemap='Could not verify /sitemap.xml';}}
+   $result=self::snapshot($response,$origin,$robots['status'],$sitemap);$score=$result['seo_score'];
   } catch(HttpError $e){throw $e;}catch(Throwable $e){error_log('B2B audit: '.$e->getMessage());fail('Website audit could not complete. No score was assigned; retry later.',502);}
-  db()->beginTransaction();try{$current=self::get($id,true);if($current['website']!==$lead['website'])fail('Website changed during audit. Run it again.',409);$rating=self::scoring(array_replace($current,['seo_score'=>$score,'website_available'=>1]));query('UPDATE leads SET seo_score=?,website_available=1,seo_result=?,audited_at=NOW(),score=?,rating=? WHERE id=?',[$score,json_encode($result,JSON_THROW_ON_ERROR),$rating['score'],$rating['rating'],$id]);self::activity($id,$uid,'website_analyzed',['seo_score'=>$score]);db()->commit();}catch(Throwable $e){db()->rollBack();throw $e;}
+  db()->beginTransaction();try{$current=self::get($id,true);if($current['website']!==$lead['website'])fail('Website changed during audit. Run it again.',409);$rating=self::scoring(array_replace($current,['seo_score'=>$score,'website_available'=>(int)$available]));query('UPDATE leads SET seo_score=?,website_available=?,seo_result=?,audited_at=NOW(),score=?,rating=? WHERE id=?',[$score,(int)$available,json_encode($result,JSON_THROW_ON_ERROR),$rating['score'],$rating['rating'],$id]);self::activity($id,$uid,'website_analyzed',['seo_score'=>$score]);db()->commit();}catch(Throwable $e){db()->rollBack();throw $e;}
+ }
+ public static function snapshot(array $response,string $origin,int $robotsStatus,string $sitemap): array {
+  $available=$response['status']>=200&&$response['status']<300;
+  $html=$available&&str_contains(strtolower($response['headers']['content-type']??''),'text/html')&&trim($response['body'])!=='';
+  $p=$html?Crawler::parse($response,$origin):null;$score=$p?Audit::pageScore($p):null;
+  $issues=$p?Audit::checks($p):[['title'=>$available?'HTML page not available for analysis':'Website returned HTTP '.$response['status'],'severity'=>'high','fix'=>'Verify the website URL and server response, then run the audit again.']];
+  return ['seo_score'=>$score,'meta_title'=>$p['title']??'Not checked','meta_description'=>$p['description']??'Not checked','h1'=>$p['h1']??'Not checked','sitemap'=>$sitemap,'robots'=>$robotsStatus===200?'Found':'Not found (HTTP '.$robotsStatus.')','ssl'=>str_starts_with($response['url'],'https://')?'HTTPS with verified certificate':'HTTP; no SSL','load_ms'=>$response['ms'],'mobile_viewport'=>$p?($p['details']['viewport']?:'Missing'):'Not checked','http_status'=>$response['status'],'website_availability'=>$available?'Available':'Unavailable','issues'=>$issues,'scope'=>'Single-page audit using the existing SEO audit engine. Fetch timing and viewport checks are basic checks, not Core Web Vitals or a rendered mobile test.','prospect'=>$score===null?'No SEO score assigned; verify website availability':($score<70?'SEO improvement opportunity':'Review issues before qualifying')];
  }
  public static function csvCell(mixed $v): string { $s=(string)($v??'');return preg_match('/^[\s\x{FEFF}]*[=+@\-]/u',$s)?"'".$s:$s; }
 }

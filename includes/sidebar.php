@@ -2,6 +2,7 @@
 $catalog=WorkspaceUI::directory();
 $groups=['Workspace'=>['dashboard'=>['Overview','grid'],'services'=>['All tools & services','layers'],'websites'=>['My websites','globe']]];
 foreach($catalog as $key=>[$group,$name,$description,$steps,$result,$icon])$groups[$group][$key]=[$name,$icon];
+if(is_admin())$groups['B2B Leads']=['admin/b2b-leads'=>['B2B Lead Extractor','search']];
 $groups['Account']=['billing'=>['Plan & billing','file'],'profile'=>['My profile','settings']];
 ?>
 <aside class="sidebar" id="sidebar">

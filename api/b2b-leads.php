@@ -9,14 +9,14 @@ if($section==='api/v1/b2b-demo'){
 $user=require_admin();check_csrf();rate_limit('b2b-admin:'.$user['id'],60,60);
 if(!BtoBLeads::ready())fail('Run cron/migrate-b2b-leads.php to install lead storage.',503);
 $action=enum_input('operation',['save','import','delete','favorite','unfavorite','note','tags','demo','analyze','export']);
-$id=(int)input('id',20,'0');$uid=(int)$user['id'];$message='Lead updated.';
+$idInput=input('id',18,'0');if(!ctype_digit($idInput))fail('Invalid lead ID.');$id=(int)$idInput;$uid=(int)$user['id'];$message='Lead updated.';
 if($action==='import'){
  if(input('authorized',1)!=='1')fail('Confirm that you are authorized to import this data.');
  $file=$_FILES['csv']??null;if(!$file||$file['error']!==UPLOAD_ERR_OK||!is_uploaded_file($file['tmp_name']))fail('Upload a CSV file, at most 2 MB.');
  if(strtolower(pathinfo($file['name'],PATHINFO_EXTENSION))!=='csv')fail('Only CSV imports are supported.');
  $result=BtoBLeads::import($file['tmp_name'],$_POST,$uid);$message=$result['added'].' leads imported; '.$result['duplicates'].' duplicates skipped.';
 } elseif($action==='analyze'){
- rate_limit('b2b-audit:'.$uid,5,300);$lead=BtoBLeads::get($id);
+ rate_limit('b2b-audit:'.$uid,5,300);$lead=BtoBLeads::get($id);rate_limit('b2b-audit-lead',1,300,(string)$id);
  if($lead['audited_at']&&strtotime($lead['audited_at'])>time()-300)fail('This lead was audited recently. Wait five minutes before retrying.');
  session_write_close();set_time_limit(120);BtoBLeads::analyze($id,$uid);
 } elseif($action==='export'){
@@ -47,4 +47,5 @@ if($action==='import'){
   db()->commit();
  }catch(Throwable $e){db()->rollBack();throw $e;}
 }
+if(session_status()===PHP_SESSION_ACTIVE)$_SESSION['flash']=$message;
 json_response(['redirect'=>url('/admin/b2b-leads'.($id?'?id='.$id:''))],$message);
