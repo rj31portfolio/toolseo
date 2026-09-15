@@ -1,5 +1,15 @@
 (() => {
  'use strict';
+ const fillLead = (lead) => {
+  const editor = document.querySelector('#lead-editor form');
+  editor.reset(); editor.elements.id.value = '0';
+  for (const name of ['business_name','category','city','state','address','website','email','phone','provenance']) editor.elements[name].value = lead[name] || '';
+  editor.elements.source_id.value = lead.source_id;
+  editor.elements.authorized.checked = false;
+  document.querySelector('#lead-editor h2').textContent = 'Review and add lead';
+  editor.elements.business_name.focus();
+  document.querySelector('#lead-editor').scrollIntoView({behavior:'smooth'});
+ };
  document.querySelector('[data-lead-discover]')?.addEventListener('submit', async event => {
   event.preventDefault();
   const form = event.target, button = form.querySelector('button');
@@ -10,24 +20,49 @@
    const response = await api('b2b-leads', new FormData(form));
    output.replaceChildren();
    const status = document.createElement('p'); status.textContent = response.message; output.append(status);
+   const collectors = [];
+   const collectAll = document.createElement('button'); collectAll.type = 'button'; collectAll.className = 'button'; collectAll.textContent = 'Collect data from all listings';
+   if (response.data.results.length) output.append(collectAll);
    for (const result of response.data.results) {
     const card = document.createElement('div'); card.className = 'card stack';
     const link = document.createElement('a'); link.href = result.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = result.title;
     const snippet = document.createElement('p'); snippet.textContent = result.snippet;
     const review = document.createElement('button'); review.type = 'button'; review.className = 'button secondary'; review.textContent = 'Review and add lead';
     review.addEventListener('click', () => {
-     const editor = document.querySelector('#lead-editor form');
-     editor.reset(); editor.elements.id.value = '0';
-     for (const name of ['business_name','category','city','state','website','email','phone','provenance']) editor.elements[name].value = '';
-     editor.elements.source_id.value = result.source_id;
-     editor.elements.provenance.value = 'Discovered via Google / HasData: ' + result.url;
-     editor.elements.authorized.checked = false;
-     document.querySelector('#lead-editor h2').textContent = 'Review and add lead';
-     editor.querySelector('[name=business_name]').focus();
-     document.querySelector('#lead-editor').scrollIntoView({behavior:'smooth'});
+     fillLead({source_id:result.source_id,provenance:'Discovered via Google / HasData: ' + result.url});
     });
-    card.append(link, snippet, review); output.append(card);
+    const collect = document.createElement('button'); collect.type = 'button'; collect.className = 'button'; collect.textContent = 'Collect lead data';
+    const details = document.createElement('div'); details.setAttribute('aria-live','polite');
+    let collected = false;
+    const run = async () => {
+     if (collect.disabled || collected) return;
+     collect.disabled = true; details.textContent = 'Collecting published business details…';
+     try {
+      const data = new FormData(); data.set('operation','collect'); data.set('source_id',result.source_id); data.set('url',result.url);
+      const response = await api('b2b-leads',data); details.replaceChildren();
+      const message = document.createElement('p'); message.textContent = response.message; details.append(message);
+      for (const lead of response.data.leads) {
+       const record = document.createElement('div'); record.className = 'card stack';
+       const heading = document.createElement('h3'); heading.textContent = lead.business_name; record.append(heading);
+       const fields = document.createElement('dl');
+       for (const [key,label] of Object.entries({category:'Category',city:'City',state:'State',address:'Address',website:'Website',email:'Email',phone:'Phone'})) {
+        const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = label; dd.textContent = lead[key] || 'Not published'; fields.append(dt,dd);
+       }
+       const save = document.createElement('button'); save.type = 'button'; save.className = 'button'; save.textContent = 'Review collected lead'; save.addEventListener('click',()=>fillLead(lead));
+       record.append(fields,save); details.append(record);
+      }
+      collected = true; collect.textContent = 'Collection complete';
+     } catch (error) { details.textContent = error.message || 'Collection failed. Please retry.'; }
+     finally { collect.disabled = collected; }
+    };
+    collectors.push(run); collect.addEventListener('click',run);
+    card.append(link, snippet, collect, review, details); output.append(card);
    }
+   collectAll.addEventListener('click',async()=>{
+    collectAll.disabled = true; button.disabled = true;
+    for (let i=0;i<collectors.length;i++) { collectAll.textContent = `Collecting listing ${i+1} of ${collectors.length}…`; await collectors[i](); }
+    collectAll.textContent = 'Collection finished — retry failed listings individually'; button.disabled = false;
+   });
   } catch (error) { output.textContent = error.message || 'Lead discovery failed. Please retry.'; }
   finally { button.disabled = false; }
  });

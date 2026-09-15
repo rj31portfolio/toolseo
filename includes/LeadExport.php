@@ -1,6 +1,6 @@
 <?php
 final class LeadExport {
- public const COLUMNS=['business_name'=>'Business Name','category'=>'Category','city'=>'City','state'=>'State','website'=>'Website','email'=>'Public Email','phone'=>'Public Phone','source'=>'Source','score'=>'Lead Score','rating'=>'Rating','seo_score'=>'SEO Score','favorite'=>'Favorite','provenance'=>'Provenance','created_at'=>'Created'];
+ public const COLUMNS=['business_name'=>'Business Name','category'=>'Category','city'=>'City','state'=>'State','address'=>'Address','website'=>'Website','email'=>'Public Email','phone'=>'Public Phone','source'=>'Source','score'=>'Lead Score','rating'=>'Rating','seo_score'=>'SEO Score','favorite'=>'Favorite','provenance'=>'Provenance','created_at'=>'Created'];
  public static function xlsx(array $records,string $path): void {
   if(!class_exists('ZipArchive'))fail('Excel export requires the PHP zip extension.',503);
   $zip=new ZipArchive();if($zip->open($path,ZipArchive::CREATE|ZipArchive::OVERWRITE)!==true)fail('Could not create Excel export.',500);
@@ -8,7 +8,7 @@ final class LeadExport {
   $sheet='<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>';
   $rowNumber=0;
   foreach([array_values(self::COLUMNS),...array_map(fn($r)=>array_map(fn($k)=>$r[$k]??'',array_keys(self::COLUMNS)),$records)] as $cells){$rowNumber++;$sheet.='<row r="'.$rowNumber.'">';foreach($cells as $col=>$v)$sheet.='<c r="'.chr(65+$col).$rowNumber.'" t="inlineStr"><is><t xml:space="preserve">'.$xml($v).'</t></is></c>';$sheet.='</row>';}
-  $sheet.='</sheetData><autoFilter ref="A1:N'.$rowNumber.'"/></worksheet>';
+  $sheet.='</sheetData><autoFilter ref="A1:'.chr(64+count(self::COLUMNS)).$rowNumber.'"/></worksheet>';
   $files=[
    '[Content_Types].xml'=>'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
    '_rels/.rels'=>'<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',

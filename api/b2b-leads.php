@@ -8,7 +8,12 @@ if($section==='api/v1/b2b-demo'){
 }
 $user=require_admin();check_csrf();rate_limit('b2b-admin:'.$user['id'],60,60);
 if(!BtoBLeads::ready())fail('Run cron/migrate-b2b-leads.php to install lead storage.',503);
-$action=enum_input('operation',['discover','save','import','delete','favorite','unfavorite','note','tags','demo','analyze','export']);
+$action=enum_input('operation',['collect','discover','save','import','delete','favorite','unfavorite','note','tags','demo','analyze','export']);
+if($action==='collect'){
+ rate_limit('b2b-collect:'.$user['id'],20,300);session_write_close();set_time_limit(90);
+ $leads=LeadCollector::collect($_POST);
+ json_response(['leads'=>$leads],$leads?'Business details collected. Review and save each lead.':'No readable business details were published on this page. Try a company profile or import a permitted CSV.');
+}
 if($action==='discover'){
  rate_limit('b2b-discover:'.$user['id'],5,300);session_write_close();set_time_limit(120);
  $results=BtoBLeads::discover($_POST);

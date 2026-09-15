@@ -2,7 +2,7 @@
 /** Business lead management and search-provider discovery. */
 final class BtoBLeads {
  public const SOURCES = ['1'=>'IndiaMART','2'=>'TradeIndia'];
- public const FIELDS = ['business_name'=>190,'category'=>190,'city'=>120,'state'=>120,'website'=>500,'email'=>190,'phone'=>40,'provenance'=>1000];
+ public const FIELDS = ['business_name'=>190,'category'=>190,'city'=>120,'state'=>120,'address'=>500,'website'=>500,'email'=>190,'phone'=>40,'provenance'=>1000];
  public static function discover(array $data,?callable $search=null): array {
   $keyword=self::text($data,'keyword',190);$location=self::text($data,'location',190);$source=self::text($data,'source_id',10);
   if($keyword===''||$location==='')fail('Enter a keyword and location.');
@@ -26,6 +26,7 @@ final class BtoBLeads {
  public static function ready(): bool { return (bool)value("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='lead_activity'"); }
  public static function migrate(): void {
   foreach(preg_split('/;\s*(?:\r?\n|$)/',file_get_contents(ROOT.'/database/migrations/009-b2b-leads.sql')) as $sql) if(trim($sql)!=='') query($sql);
+  if(!value("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='leads' AND column_name='address'"))query("ALTER TABLE leads ADD COLUMN address VARCHAR(500) NOT NULL DEFAULT '' AFTER state");
   foreach(['lead_email'=>'email','lead_phone'=>'phone','lead_website'=>'website(190)'] as $name=>$column)if(!value('SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema=DATABASE() AND table_name=\'leads\' AND index_name=?',[$name]))query('ALTER TABLE leads ADD INDEX '.$name.' ('.$column.')');
  }
  public static function text(array $data,string $key,int $max): string {
