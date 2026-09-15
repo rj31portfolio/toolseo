@@ -26,6 +26,7 @@ try {
  rejectLead(fn()=>BtoBLeads::discover(array_replace($discoveryInput,['keyword'=>''])),'Discovery requires keyword');
  rejectLead(fn()=>BtoBLeads::discover(array_replace($discoveryInput,['source_id'=>'3'])),'Discovery rejects unsupported source');
  rejectLead(fn()=>BtoBLeads::discover($discoveryInput,static function(){throw new RuntimeException('Provider unavailable');}),'Discovery surfaces provider errors');
+ require __DIR__.'/b2b-collection-checks.php';
  $record=['source_id'=>'1','business_name'=>'Fixture Packaging','category'=>'Packaging','city'=>'Mumbai','state'=>'Maharashtra','website'=>'https://example.com/','email'=>'public@example.com','phone'=>'+91 2222222222','provenance'=>'Isolated automated test fixture'];
  $valid=BtoBLeads::validate($record);verifyLead(BtoBLeads::scoring($valid)['score']===80,'Contact completeness scoring');
  verifyLead(BtoBLeads::scoring($valid+['website_available'=>1,'seo_score'=>0])['score']===100,'SEO opportunity scoring bounded');

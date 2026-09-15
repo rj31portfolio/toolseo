@@ -51,6 +51,19 @@ final class LeadCollector {
    };$visit($scope);return $item;
   };
   foreach($xpath->query('//*[@itemscope and @itemtype]') as $scope)$nodes[]=$micro($scope);
+  // IndiaMART renders visible seller data in individual product cards.
+  if($source==='1')foreach($xpath->query('//article[contains(concat(" ",normalize-space(@class)," ")," template7-product-card ")]') as $card){
+   $name=$xpath->query('.//a[contains(concat(" ",normalize-space(@class)," ")," template7-seller-name ")]',$card)->item(0);
+   if(!$name)continue;
+   $city=trim($xpath->evaluate('string(.//*[@itemprop="addressLocality"])',$card));
+   // A service area is not a verified business address.
+   if(preg_match('/^Deals in\b/i',$city))$city='';
+   $nodes[]=['@type'=>'LocalBusiness','name'=>$name->textContent,'url'=>$name->getAttribute('href'),
+    'category'=>$xpath->evaluate('string(.//a[contains(concat(" ",normalize-space(@class)," ")," template7-product-name ")])',$card),
+    'address'=>['addressLocality'=>$city],
+    'telephone'=>$xpath->evaluate('string(.//a[starts-with(@href,"tel:")]/@href)',$card),
+    'email'=>$xpath->evaluate('string(.//a[starts-with(@href,"mailto:")]/@href)',$card)];
+  }
   $resolve=static function(mixed $v)use($refs):mixed{return is_array($v)&&isset($v['@id'],$refs[$v['@id']])?array_replace($refs[$v['@id']],$v):$v;};
   $records=[];
   foreach($nodes as $node){
