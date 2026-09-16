@@ -36,7 +36,7 @@ final class BtoBLeads {
  }
  public static function validate(array $data): array {
   $r=[];foreach(self::FIELDS as $key=>$max)$r[$key]=self::text($data,$key,$max);
-  foreach(['business_name','provenance'] as $key)if($r[$key]==='')fail(ucfirst(str_replace('_',' ',$key)).' is required.');
+  foreach(['business_name','phone','provenance'] as $key)if($r[$key]==='')fail(ucfirst(str_replace('_',' ',$key)).' is required.');
   if($r['city']===''&&$r['state']==='')fail('Enter a city or state.');
   $source=self::text($data,'source_id',10);if(!isset(self::SOURCES[$source]))fail('Choose IndiaMART or TradeIndia.');$r['source_id']=(int)$source;
   if($r['website']!==''){try{$r['website']=SeoExpert::website($r['website']);}catch(Throwable){fail('Enter a public HTTP or HTTPS website URL.');}}

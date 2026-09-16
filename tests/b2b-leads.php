@@ -39,6 +39,8 @@ try {
  rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['website'=>'javascript:alert(1)'])),'Unsafe website rejected');
  rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['website'=>'http://127.0.0.1/'])),'Private literal website rejected');
  rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['email'=>'invalid'])),'Invalid email rejected');
+ rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['phone'=>''])),'Business phone is required');
+ rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['phone'=>'98XXXXXX12'])),'Masked phone is rejected');
  rejectLead(fn()=>BtoBLeads::validate(array_replace($record,['business_name'=>['bad']])),'Array input rejected');
  $id=BtoBLeads::save($record,1);rejectLead(fn()=>BtoBLeads::save(array_replace($record,['source_id'=>'2','business_name'=>'FIXTURE PACKAGING']),1),'Cross-source duplicate blocked');
  for($i=2;$i<=7;$i++)BtoBLeads::save(array_replace($record,['business_name'=>'Fixture Packaging '.$i]),1);
@@ -52,16 +54,16 @@ try {
  rejectLead(fn()=>BtoBLeads::filters(['from'=>'2026-02-30']),'Invalid dates rejected');
  [$where,$params]=BtoBLeads::filters(['duplicates'=>'1']);verifyLead((int)value('SELECT COUNT(*) FROM leads l WHERE '.$where,$params)===7,'Shared contacts flagged as possible duplicates');
  $csv=tempnam(sys_get_temp_dir(),'b2b-test-');$tempFiles[]=$csv;
- file_put_contents($csv,"business_name,city,state\nFresh,Mumbai,Maharashtra\nFixture Packaging,Mumbai,Maharashtra\n");
+ file_put_contents($csv,"business_name,city,state,phone\nFresh,Mumbai,Maharashtra,2222222222\nFixture Packaging,Mumbai,Maharashtra,2222222222\n");
  $import=BtoBLeads::import($csv,$record,1);verifyLead($import===['added'=>1,'duplicates'=>1],'CSV import reports inserted and skipped duplicates');
- $before=(int)value('SELECT COUNT(*) FROM leads');file_put_contents($csv,"business_name,city,email\nWould be valid,Mumbai,hello@example.com\nBroken,Mumbai,invalid\n");
+ $before=(int)value('SELECT COUNT(*) FROM leads');file_put_contents($csv,"business_name,city,email,phone\nWould be valid,Mumbai,hello@example.com,2222222222\nBroken,Mumbai,invalid,2222222222\n");
  rejectLead(fn()=>BtoBLeads::import($csv,$record,1),'Invalid CSV row rejects import');verifyLead((int)value('SELECT COUNT(*) FROM leads')===$before,'Failed import inserts no partial data');
  $xlsx=tempnam(sys_get_temp_dir(),'b2b-test-');$tempFiles[]=$xlsx;LeadExport::xlsx([array_replace(BtoBLeads::get($id),['business_name'=>'=1+1'])],$xlsx);$zip=new ZipArchive();$zip->open($xlsx);$sheet=$zip->getFromName('xl/worksheets/sheet1.xml');verifyLead(str_contains($sheet,'=1+1')&&!str_contains($sheet,'<f>'),'Excel uses literal cells instead of formulas');$dom=new DOMDocument();verifyLead($dom->loadXML($sheet),'Excel worksheet is valid XML');$zip->close();verifyLead(BtoBLeads::csvCell(' =1+1')==="' =1+1",'CSV formula injection neutralized');
  query('UPDATE leads SET seo_score=20,website_available=1,seo_result=\'{"test":true}\' WHERE id=?',[$id]);
  BtoBLeads::save(array_replace($record,['website'=>'https://example.org/']),1,$id);$changed=BtoBLeads::get($id);verifyLead($changed['seo_score']===null&&$changed['seo_result']===null&&$changed['demo_slot']===null,'Website edits clear stale audits and public approval');
  $tradeId=BtoBLeads::save(array_replace($record,['source_id'=>'2','business_name'=>'Trade Fixture','city'=>'Delhi','state'=>'Delhi']),1);query('UPDATE leads SET demo_slot=1 WHERE id=?',[$tradeId]);
  $tradeDemo=BtoBLeads::demo(['keyword'=>'Packaging','location'=>'Delhi','source_id'=>'2']);verifyLead(count($tradeDemo)===1&&$tradeDemo[0]['source']==='TradeIndia','TradeIndia demo preserves source attribution');
- foreach([['source_id'=>'2'],['website'=>'no'],['email'=>'no'],['phone'=>'no'],['location'=>'Delhi'],['category'=>'Packaging','rating'=>'Hot','source_id'=>'2']] as $filter){[$where,$params]=BtoBLeads::filters($filter);verifyLead((int)value('SELECT COUNT(*) FROM leads l WHERE '.$where,$params)===1,'Filter '.json_encode($filter));}
+ foreach([['source_id'=>'2'],['website'=>'no'],['email'=>'no'],['location'=>'Delhi'],['category'=>'Packaging','rating'=>'Hot','source_id'=>'2']] as $filter){[$where,$params]=BtoBLeads::filters($filter);verifyLead((int)value('SELECT COUNT(*) FROM leads l WHERE '.$where,$params)===1,'Filter '.json_encode($filter));}
  for($i=0;$i<20;$i++)BtoBLeads::save(array_replace($record,['business_name'=>'Pagination fixture '.$i]),1);
  $password=bin2hex(random_bytes(16));foreach(['admin','customer'] as $role)query('INSERT INTO users(name,email,password,role,verified_at) VALUES (?,?,?,?,NOW())',[$role,$role.'@example.test',password_hash($password,PASSWORD_DEFAULT),$role]);
  $socket=stream_socket_server('tcp://127.0.0.1:0');$address=stream_socket_get_name($socket,false);fclose($socket);$base='http://'.$address;

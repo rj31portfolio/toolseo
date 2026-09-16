@@ -26,6 +26,14 @@ final class LeadCollector {
   if(is_array($value))$value=$value['name']??$value['@value']??'';
   return is_string($value)?trim(preg_replace('/[\x00-\x1F\x7F\s]+/u',' ',html_entity_decode(strip_tags($value),ENT_QUOTES|ENT_HTML5,'UTF-8'))??''):'';
  }
+ private static function phone(mixed $value): string {
+  if(is_array($value)){
+   foreach($value as $candidate){$phone=self::phone($candidate);if($phone!=='')return $phone;}
+   return '';
+  }
+  $phone=preg_replace('/^tel:/i','',self::scalar($value));
+  return preg_match('/^\+?[0-9 ().-]+$/D',$phone)&&preg_match('/^\d{7,15}$/D',preg_replace('/\D/','',$phone))?$phone:'';
+ }
  public static function parse(string $html,string $url,string $source): array {
   $dom=new DOMDocument();$previous=libxml_use_internal_errors(true);
   try{$dom->loadHTML('<?xml encoding="UTF-8">'.$html,LIBXML_NONET|LIBXML_NOERROR|LIBXML_NOWARNING);}finally{libxml_clear_errors();libxml_use_internal_errors($previous);}
@@ -82,8 +90,12 @@ final class LeadCollector {
    $contact=$resolve($contacts[0]??[]);if(!is_array($contact))$contact=[];
    $email=strtolower(preg_replace('/^mailto:/i','',self::scalar($node['email']??$contact['email']??'')));
    if(filter_var($email,FILTER_VALIDATE_EMAIL)&&strlen($email)<=190)$r['email']=$email;
-   $phone=preg_replace('/^tel:/i','',self::scalar($node['telephone']??$contact['telephone']??''));
-   if(preg_match('/^\+?[0-9 ().-]+$/D',$phone)&&preg_match('/^\d{7,15}$/D',preg_replace('/\D/','',$phone)))$r['phone']=$phone;
+   $r['phone']=self::phone($node['telephone']??'');
+   foreach($contacts as $point){
+    if($r['phone']!=='')break;
+    $point=$resolve($point);
+    if(is_array($point))$r['phone']=self::phone($point['telephone']??'');
+   }
    try{$website=SeoExpert::website(self::scalar($node['url']??''));if(!preg_match('/(^|\.)(indiamart\.com|tradeindia\.com)$/i',parse_url($website,PHP_URL_HOST)))$r['website']=$website;}catch(Throwable){}
    $r['provenance']='Public listing: '.$url;
    foreach(BtoBLeads::FIELDS as $key=>$limit)$r[$key]=mb_substr($r[$key],0,$limit);

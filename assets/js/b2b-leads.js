@@ -27,6 +27,7 @@
     const card = document.createElement('div'); card.className = 'card stack';
     const link = document.createElement('a'); link.href = result.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = result.title;
     const snippet = document.createElement('p'); snippet.textContent = result.snippet;
+    const contactLink = document.createElement('a'); contactLink.href = result.url; contactLink.target = '_blank'; contactLink.rel = 'noopener noreferrer'; contactLink.textContent = 'Open listing / log in to view business number';
     const review = document.createElement('button'); review.type = 'button'; review.className = 'button secondary'; review.textContent = 'Review and add lead';
     review.addEventListener('click', () => {
      fillLead({source_id:result.source_id,provenance:'Discovered via Google / HasData: ' + result.url});
@@ -49,6 +50,9 @@
         const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = label; dd.textContent = lead[key] || 'Not published'; fields.append(dt,dd);
        }
        const save = document.createElement('button'); save.type = 'button'; save.className = 'button'; save.textContent = 'Review collected lead'; save.addEventListener('click',()=>fillLead(lead));
+       if (!lead.phone) {
+        const missing = document.createElement('p'); missing.textContent = 'Business phone required before saving. Open the listing, log in if prompted, and enter the revealed business number in the editor.'; record.append(missing);
+       }
        record.append(fields,save); details.append(record);
       }
       collected = true; collect.textContent = 'Collection complete';
@@ -56,7 +60,7 @@
      finally { collect.disabled = collected; }
     };
     collectors.push(run); collect.addEventListener('click',run);
-    card.append(link, snippet, collect, review, details); output.append(card);
+    card.append(link, snippet, contactLink, collect, review, details); output.append(card);
    }
    collectAll.addEventListener('click',async()=>{
     collectAll.disabled = true; button.disabled = true;

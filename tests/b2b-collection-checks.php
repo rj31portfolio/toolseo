@@ -14,6 +14,8 @@ verifyLead(count($collected)===2,'Collector excludes marketplace and product ent
 verifyLead($collected[0]['business_name']==='Collected Packaging'&&$collected[0]['email']==='sales@example.com'&&$collected[0]['phone']==='+91 2222222222','Collector resolves referenced business contacts');
 verifyLead($collected[0]['address']==='10 Market Road, Mumbai, Maharashtra, 400001'&&$collected[0]['city']==='Mumbai'&&$collected[0]['website']==='https://example.com/','Collector extracts address and business website');
 verifyLead($collected[1]['email']===''&&$collected[1]['phone']===''&&$collected[1]['city']==='Delhi','Collector never mixes contacts or invents masked numbers');
+$multiple='<script type="application/ld+json">'.json_encode(['@type'=>'LocalBusiness','name'=>'Multiple Contacts','telephone'=>'98XXXXXX12','contactPoint'=>[['telephone'=>''],['telephone'=>['masked','tel:+91 2222222222']]]]).'</script>';
+foreach(['1','2'] as $source)verifyLead(LeadCollector::parse($multiple,$listing,$source)[0]['phone']==='+91 2222222222','Collector checks all business contact points for source '.$source);
 $micro='<div itemscope itemtype="https://schema.org/LocalBusiness"><h2 itemprop="name">Micro Supplier</h2><a itemprop="email" href="mailto:micro@example.com">Email</a><div itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"><span itemprop="addressLocality">Pune</span></div></div>';
 $microLead=LeadCollector::parse($micro,$listing,'1');
 verifyLead(count($microLead)===1&&$microLead[0]['city']==='Pune'&&$microLead[0]['email']==='micro@example.com','Collector reads scoped microdata');

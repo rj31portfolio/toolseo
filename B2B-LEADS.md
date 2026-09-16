@@ -9,19 +9,19 @@
 
 ## Populate leads
 
-Add a lead manually or upload a UTF-8 CSV. Each upload requires a source, provenance / authorization reference and authorization confirmation. Maximum 2 MB and 1,000 rows per upload. Unknown public business contacts should be blank. CSV headings:
+Add a lead manually or upload a UTF-8 CSV. Each upload requires a source, provenance / authorization reference and authorization confirmation. Maximum 2 MB and 1,000 rows per upload. A valid business phone is required; unknown optional contacts should be blank. CSV headings:
 
 ```csv
 business_name,category,city,state,website,email,phone
 ```
 
-Business name and city or state are required. Source and provenance come from the import form. Validation finishes before insertion; any invalid row rejects the import. A normalized business name + city + state fingerprint prevents duplicates across both sources, including concurrent imports. Existing records are skipped without overwriting their data. Shared websites, emails or phone strings are flagged by the duplicate filter for manual review; legitimate branches can share contacts. Slight spelling/address variations may require manual review.
+Business name, phone and city or state are required. Source and provenance come from the import form. Validation finishes before insertion; any invalid row rejects the import. A normalized business name + city + state fingerprint prevents duplicates across both sources, including concurrent imports. Existing records are skipped without overwriting their data. Shared websites, emails or phone strings are flagged by the duplicate filter for manual review; legitimate branches can share contacts. Slight spelling/address variations may require manual review.
 
 ## Live discovery
 
 Use **Extract leads** in the admin module with a keyword, location and marketplace. Discovery reuses the HasData connection in Administration > Settings to search Google-indexed marketplace listings. It uses provider credits and returns up to ten search results, filtered to the selected marketplace and deduplicated by URL. Missing configuration and provider errors appear in the interface. Admin authentication, CSRF and a five-searches-per-five-minutes limit apply.
 
-Choose **Collect data from all listings**, or **Collect lead data** on one result. The collector fetches public listing pages using the existing bounded HTTP client and robots policy, extracting up to 25 businesses per page from JSON-LD, scoped microdata and visible IndiaMART seller cards. Each company keeps its own name, category/product, city, state, full address, website, email and phone. Marketplace support contacts, masked numbers and service areas are not treated as verified business contacts or addresses. Missing fields remain blank. No login or hidden-contact action is automated.
+Choose **Collect data from all listings**, or **Collect lead data** on one result. The collector fetches public listing pages using the existing bounded HTTP client and robots policy, extracting up to 25 businesses per page from JSON-LD, scoped microdata and visible IndiaMART seller cards. Each company keeps its own name, category/product, city, state, full address, website, email and phone. Marketplace support contacts, masked numbers and service areas are not treated as verified business contacts or addresses. Missing fields remain blank during review, but saving or importing requires a valid business phone. If a number requires login, open the listing, sign in on the marketplace, and enter the revealed business number in the editor. Browser login is not shared with the server collector. No login or hidden-contact action is automated.
 
 Choose **Review collected lead** to populate the editor, verify the details and save. Source and listing URL are retained as provenance. Full addresses persist through editing, CSV import and CSV/Excel export; existing deployments should rerun `php cron/migrate-b2b-leads.php` for the additive address column. Collection is limited to 20 page requests per admin per five minutes. Failed listings display individual errors and can be retried. The homepage continues to search only the five approved previews.
 
