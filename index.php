@@ -17,6 +17,9 @@ if(setting('maintenance',false) && !is_admin() && !in_array($section,['login','l
 if($section==='api/v1/domain-dns'){require ROOT.'/api/domain-dns.php';exit;}
 if(in_array($section,['api/v1/instagram-downloader','api/v1/instagram-media'],true)){require ROOT.'/api/instagram-downloader.php';exit;}
 if(in_array($section,['api/v1/b2b-demo','api/v1/b2b-leads'],true)){require ROOT.'/api/b2b-leads.php';exit;}
+if($section==='api/v1/seo-expert-enquiry'){require ROOT.'/api/seo-expert-enquiry.php';exit;}
+if($section==='api/v1/seo-expert-admin'){require ROOT.'/api/seo-expert-admin.php';exit;}
+if($section==='hire-seo-expert'){require ROOT.'/public/seo-expert.php';exit;}
 if(str_starts_with($section,'api/v1/')){require ROOT.'/api/router.php';exit;}
 if(str_starts_with($section,'api/chat/')){require ROOT.'/api/chat-public.php';exit;}
 if($section==='live-chat'){require ROOT.'/dashboard/index.php';exit;}
@@ -27,7 +30,7 @@ if($section===$domainService['slug']){if(!$domainService['enabled'])fail('This t
 $instagramService=InstagramDownloader::settings();
 if($section===$instagramService['slug']){if(!$instagramService['enabled'])fail('This tool is currently disabled.',404);require ROOT.'/public/instagram-downloader.php';exit;}
 if(in_array($section,['features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy','cookie-policy'])){require ROOT.'/public/page.php';exit;}
-if($section==='sitemap.xml'){header('Content-Type: application/xml');echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';foreach(['','features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy'] as $p)echo '<url><loc>'.e(cfg('APP_URL').'/'.$p).'</loc></url>';echo '</urlset>';exit;}
+if($section==='sitemap.xml'){header('Content-Type: application/xml');echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';foreach(['','hire-seo-expert','features','pricing','how-it-works','seo-tools','about','contact','blog','terms','privacy','refund-policy'] as $p)echo '<url><loc>'.e(cfg('APP_URL').'/'.$p).'</loc></url>';echo '</urlset>';exit;}
 if(str_starts_with($section,'admin')){require ROOT.'/admin/index.php';exit;}
 $modules=['local-seo','sitemap-generator','robots-generator','services','dashboard','websites','website','audit','pages','keywords','rankings','research','competitors','backlinks','content','tasks','reports','report','ai-assistant','schema','internal-links','automations','human-services','team','billing','profile','notifications','subscription','project-settings'];
 if(isset(WorkspaceUI::utilities()[$section])){$localTool=substr($section,6);$section='no-api-tools';require ROOT.'/dashboard/index.php';exit;}

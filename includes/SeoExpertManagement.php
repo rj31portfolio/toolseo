@@ -1,7 +1,8 @@
 <?php
 final class SeoExpertManagement {
+ public static function text(array $data,string $key,int $max): string {$v=$data[$key]??'';if(!is_string($v)||mb_strlen($v)>$max)fail('Invalid '.$key.'.');return trim($v);}
  public static function filters(array $data): array {
-  $q=BtoBLeads::text($data,'q',190);$status=BtoBLeads::text($data,'status',30);$plan=BtoBLeads::text($data,'plan',20);$duration=BtoBLeads::text($data,'duration',2);
+  $q=self::text($data,'q',190);$status=self::text($data,'status',30);$plan=self::text($data,'plan',20);$duration=self::text($data,'duration',2);
   $where=['1=1'];$params=[];
   foreach(['status'=>SeoExpert::STATUSES,'plan'=>['undecided',...array_keys(SeoExpert::PLANS)],'duration'=>['3','6','12']] as $key=>$allowed){$v=$$key;if($v==='')continue;if(!in_array($v,$allowed,true))fail('Invalid '.$key.' filter.');$where[]='e.'.$key.'=?';$params[]=$v;}
   if($q!==''){$where[]="(e.full_name LIKE ? ESCAPE '!' OR e.business_name LIKE ? ESCAPE '!' OR e.email LIKE ? ESCAPE '!' OR e.reference LIKE ? ESCAPE '!')";$like='%'.str_replace(['!','%','_'],['!!','!%','!_'],$q).'%';array_push($params,$like,$like,$like,$like);}

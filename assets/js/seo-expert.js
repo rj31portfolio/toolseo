@@ -5,6 +5,10 @@
  if (duration) { duration.addEventListener('change',updatePrices); updatePrices(); }
  const open = (type,plan,months) => {
   if (!dialog || !form) return;
+  if (form.dataset.sent === 'true') {
+   form.reset();form.elements.request_token.value = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2,'0')).join('');
+   const submit = form.querySelector('button.button');submit.disabled = false;submit.textContent = 'Send SEO enquiry';form.querySelector('[data-expert-feedback]').textContent = '';delete form.dataset.sent;
+  }
   form.elements.request_type.value = ['audit','hire','plan'].includes(type)?type:'hire';
   form.elements.plan.value = ['starter','growth','pro'].includes(plan)?plan:'undecided';
   form.elements.duration.value = ['3','6','12'].includes(months)?months:(duration?.value || '3');
@@ -21,7 +25,7 @@
   try {
    const response = await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'},credentials:'same-origin'});
    const result = await response.json();if (!response.ok || !result.success) throw new Error(result.message || 'Could not send your enquiry.');
-   feedback.textContent = result.message + ' Reference: ' + result.data.reference;button.textContent = 'Enquiry received';
+   feedback.textContent = result.message + ' Reference: ' + result.data.reference;button.textContent = 'Enquiry received';form.dataset.sent = 'true';
   } catch(error) {feedback.textContent = error.message || 'Please try again.';button.disabled = false;}
  });
 })();

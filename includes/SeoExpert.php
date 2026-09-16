@@ -41,7 +41,7 @@ final class SeoExpert {
   $existing=row('SELECT * FROM seo_expert_clients WHERE enquiry_id=?',[$lead['id']]);
   if(!in_array($lead['status'],['Active','Completed'],true)){if($existing)query("UPDATE seo_expert_clients SET status='On Hold' WHERE id=?",[$existing['id']]);return $existing?(int)$existing['id']:null;}
   if($lead['plan']==='undecided')fail('Choose Starter, Growth or Pro before activating a client.');
-  if($existing){query('UPDATE seo_expert_clients SET status=? WHERE id=?',[$lead['status'],$existing['id']]);return (int)$existing['id'];}
+  if($existing){query('UPDATE seo_expert_clients SET status=?,website=?,plan=?,duration=?,assigned_expert=?,target_keywords=?,target_location=? WHERE id=?',[$lead['status'],$lead['website'],$lead['plan'],$lead['duration'],$lead['assigned_expert'],$lead['target_keywords'],$lead['target_location'],$existing['id']]);return (int)$existing['id'];}
   $start=date('Y-m-d');$end=self::endDate($start,(int)$lead['duration']);query('INSERT INTO seo_expert_clients(enquiry_id,website,plan,duration,start_date,end_date,assigned_expert,target_keywords,target_location,notes,status) VALUES (?,?,?,?,?,?,?,?,?,\'\',?)',[$lead['id'],$lead['website'],$lead['plan'],$lead['duration'],$start,$end,$lead['assigned_expert'],$lead['target_keywords'],$lead['target_location'],$lead['status']]);$id=(int)db()->lastInsertId();
   foreach(['Audit & Fix','Optimize & Grow','Scale & Improve'] as $i=>$title){$due=min($end,date('Y-m-d',strtotime($start.' +'.(($i+1)*30-1).' days')));query('INSERT INTO seo_expert_tasks(client_id,month_number,title,due_date) VALUES (?,?,?,?)',[$id,$i+1,$title,$due]);}return $id;
  }

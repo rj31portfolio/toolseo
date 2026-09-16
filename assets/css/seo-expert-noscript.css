@@ -1,0 +1,1 @@
+.expert-dialog:not([open]){display:block;position:static;max-height:none;margin:24px auto}.expert-dialog [data-expert-close]{display:none}
