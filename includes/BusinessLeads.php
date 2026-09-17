@@ -7,7 +7,7 @@ final class BusinessLeads {
  }
  public static function parse(array $data): array {
   if(isset($data['error'])||isset($data['errors'])||isset($data['requestMetadata']['status'])&&$data['requestMetadata']['status']!=='ok')throw new RuntimeException('The lead service could not complete this search.');
-  $items=$data['localResults']??$data['searchResults']??$data['placesResults']??null;
+  $items=$data['organicResults']??$data['localResults']??$data['searchResults']??$data['placesResults']??null;
   if(!is_array($items)||!array_is_list($items))throw new RuntimeException('The lead service returned an unexpected response. Please retry later.');
   $out=[];$text=static fn($v,$n)=>is_scalar($v)?mb_substr(trim((string)$v),0,$n):'';
   foreach(array_slice($items,0,100) as $item){if(!is_array($item))continue;$name=$text($item['title']??$item['name']??'',250);if($name==='')continue;

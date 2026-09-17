@@ -16,7 +16,7 @@ function auth_action(string $action): never {
   $trialDays=max(0,min(90,(int)setting('trial_days',0)));$trialPlan=(int)setting('trial_plan_id',2);
   if($trialDays && value('SELECT id FROM plans WHERE id=? AND active=1',[$trialPlan]))query('INSERT INTO subscriptions(user_id,plan_id,starts_at,ends_at,is_trial) VALUES (?,?,NOW(),DATE_ADD(NOW(),INTERVAL ? DAY),1)',[$id,$trialPlan,$trialDays]);
   else query("INSERT INTO subscriptions(user_id,plan_id,starts_at) SELECT ?,id,NOW() FROM plans WHERE slug='free'",[$id]);
-  $token=auth_token($id,'verify',48); email_queue($email,'Welcome to SEO AutoPilot — verify your email',cfg('APP_URL').'/verify-email?token='.$token);
+  $token=auth_token($id,'verify',48); email_queue($email,'Welcome to SEO Zentro — verify your email',cfg('APP_URL').'/verify-email?token='.$token);
   db()->commit(); session_regenerate_id(true); $_SESSION['user_id']=$id; $_SESSION['session_version']=1; audit_log('registered'); redirect('/dashboard');
  }
  if ($action==='login') {
