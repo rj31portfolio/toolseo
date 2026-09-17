@@ -1,0 +1,6 @@
+import fs from 'node:fs';
+const tabs=await(await fetch('http://127.0.0.1:9224/json')).json();
+const ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r,{once:true}));let id=0;const pending=new Map();ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(pending.has(m.id)){pending.get(m.id)(m);pending.delete(m.id);}});const send=(method,params={})=>new Promise(r=>{pending.set(++id,r);ws.send(JSON.stringify({id,method,params}));});
+await send('Emulation.setDeviceMetricsOverride',{width:390,height:1000,deviceScaleFactor:1,mobile:true});await send('Page.navigate',{url:'http://localhost/ppso/'});await new Promise(r=>setTimeout(r,1200));
+console.log(JSON.stringify(await send('Runtime.evaluate',{expression:'JSON.stringify({viewport:innerWidth,width:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll("body *")].filter(e=>e.getBoundingClientRect().right>innerWidth+1).slice(0,10).map(e=>({tag:e.tagName,cls:e.className,width:e.getBoundingClientRect().width}))})',returnByValue:true})));
+const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync('storage/zentro-mobile.png',Buffer.from(shot.result.data,'base64'));await send('Browser.close');ws.close();
