@@ -1,0 +1,25 @@
+<?php $guide=[
+ 'about'=>['SEO made easier to act on','SEO Zentro brings website analysis, business tools and expert support into one workspace. We help business owners understand their next step and help agencies organize work across client websites.',[
+  ['For business owners','Start with an audit to understand the technical and content issues on your website. Use the findings to prioritize improvements, or ask an SEO expert to help plan the work.'],
+  ['For agencies and teams','Keep projects, keywords, tasks and reports together. Compare the limits on our plans to choose the capacity that matches your client portfolio.'],
+  ['A practical approach to growth','An audit identifies opportunities; it does not automatically fix your website or guarantee a ranking. Progress comes from implementing useful changes and measuring the results over time.']]],
+ 'how-it-works'=>['From your first visit to your next SEO improvement','Try the public demos, set up your workspace and choose the level of support your business needs.',[
+  ['1. Try the tools','Generate a QR code, create a WhatsApp link or send a message in the live chat demo. Each demo offers three free uses before login is required. QR downloads and copying an existing link do not use another try.'],
+  ['2. Create your workspace','Register, add your website and choose its target market. Run an audit to find issues such as missing titles, broken pages and crawlability problems.'],
+  ['3. Prioritize and implement','Review the findings, create a task list and make changes on your website. If you need help, submit an SEO expert enquiry with your website and business goals.'],
+  ['4. Measure your progress','Run follow-up audits and review your tracked keywords and reports. Look for patterns over time rather than treating a single SEO score as a ranking prediction.'],
+  ['5. Upgrade when you need more','Compare website, keyword, crawl and report limits on the plans page. Paid workspace plans and managed SEO programs are separate services, so choose the option that fits the work you need.']]],
+ 'pricing'=>['Choose tools, expert help, or both','Workspace subscriptions give you tool capacity. Managed SEO programs provide expert support with an agreed scope. Business lead research is quoted separately.',[
+  ['Choose a workspace plan','Use the monthly plans above for audits, tracked keywords and reports. Check each plan’s limits before buying. Existing customers can open Billing to review the available upgrade options.'],
+  ['Choose an SEO expert','For help with strategy, technical priorities, page optimization and content planning, explore the managed SEO programs. The displayed program total applies; a monthly equivalent is shown for comparison.'],
+  ['Need help choosing?','Email info@seozentro.com with your website, number of projects and goals. We can help you understand which service matches your needs before you proceed.']]],
+ 'features'=>['Find the right service for your goal','Use the workspace for ongoing SEO work, public demos for quick business tasks, and expert services when you need implementation support.',[
+  ['Improve your website','Audit technical and on-page issues, organize keywords and turn recommendations into tasks. Revisit reports after you implement changes to understand what improved.'],
+  ['Make it easier to contact you','Create a WhatsApp contact link or a QR code for your business. Try the live chat demo to see how a website conversation and follow-up request can work.'],
+  ['Research your market','Request business research from Google Maps, Yelp or Yellow Pages. Tell us your category and location so we can confirm coverage and available contact fields.']]],
+ 'seo-tools'=>['Small tools for everyday business tasks','Explore your SEO workspace and try practical generators directly from the homepage.',[
+  ['QR codes you can share','Choose website, contact card, Wi-Fi, payment or other supported formats. Customize the colors, download PNG or SVG and scan-test the code before printing.'],
+  ['WhatsApp links that start conversations','Create a click-to-chat link with a phone number and optional message. Add it to your website or social bio. Your customer chooses whether to send the message.'],
+  ['Live chat before you install','Send sample questions and try the follow-up form. The public demo uses sample business information; installing a real widget and managing captured leads requires your account.']]]
+][$section]??null;if($guide):?>
+<section class="container section-pad page-guide"><div class="section-head"><span class="eyebrow">GET MORE FROM SEO ZENTRO</span><h2><?=e($guide[0])?></h2><p><?=e($guide[1])?></p></div><div class="grid grid-3"><?php foreach($guide[2] as [$heading,$body]):?><article class="card"><h3><?=e($heading)?></h3><p><?=e($body)?></p></article><?php endforeach;?></div><div class="row demo-shortcuts"><a class="button" href="<?=url('/#free-qr-generator')?>">Try the free demos</a><a class="button secondary" href="<?=url('/hire-seo-expert')?>">Hire an SEO expert</a><a href="<?=url('/contact')?>">Talk to us →</a></div></section><?php endif;?>

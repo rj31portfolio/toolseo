@@ -15,6 +15,7 @@ if(!isset($_SESSION['user_id']) && isset($_COOKIE['seo_remember']) && is_file(RO
 }
 if(setting('maintenance',false) && !is_admin() && !in_array($section,['login','logout']))fail('Scheduled maintenance is in progress. Please return shortly.',503);
 if($section==='api/v1/domain-dns'){require ROOT.'/api/domain-dns.php';exit;}
+if($section==='api/v1/guest-demo'){require ROOT.'/api/guest-demo.php';exit;}
 if(in_array($section,['api/v1/instagram-downloader','api/v1/instagram-media'],true)){require ROOT.'/api/instagram-downloader.php';exit;}
 if(in_array($section,['api/v1/b2b-demo','api/v1/b2b-leads'],true)){require ROOT.'/api/b2b-leads.php';exit;}
 if($section==='api/v1/seo-expert-enquiry'){require ROOT.'/api/seo-expert-enquiry.php';exit;}

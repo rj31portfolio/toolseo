@@ -24,6 +24,10 @@ The local application is at http://localhost/ppso/. Production deployment has no
 
 ## Validation
 
+Homepage demos: QR generation, WhatsApp link generation and live chat each allow three anonymous uses. A first-party, HttpOnly `zentro_demo` cookie identifies the browser for up to one year; counters are stored in the existing `rate_limits` table and updated transactionally. Logged-in users are exempt from this demo allowance. QR and WhatsApp content remain client-side, and demo chat content is not sent to the server. Clearing cookies or changing browsers creates a new anonymous identity; this is a trial experience, not identity verification. The cookie policy explains the usage cookie.
+
+`php tests/guest-demos.php` checks independent allowances, fourth-use rejection, session persistence, CSRF, login continuation and public page content. `node tests/demo-browser.mjs` tests the real QR, WhatsApp and chat interfaces plus the expert enquiry dialog and mobile overflow; it requires a disposable Chrome instance on debugging port 9225.
+
 `php tests/launch.php` exercises public routes, admin authentication, CSRF rejection, drafts, publishing/unpublishing, escaped article content, structured data, sitemap visibility, export and lead response normalization. It creates temporary test records and removes them.
 
 `php tests/unit.php` checks existing core URL, crawl, schema and escaping behavior. Application PHP files were syntax checked.
