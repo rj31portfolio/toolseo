@@ -1,6 +1,7 @@
 Options -Indexes
 DirectoryIndex index.php
 RewriteEngine On
+RewriteRule ^robots\.txt$ index.php [QSA,L]
 RewriteRule ^(?:config|includes|database|storage|tests|cron|vendor)(?:/|$) - [F,L,NC]
 RewriteRule ^(?:admin|dashboard|auth|api|install|public)/.*\.php$ - [F,L,NC]
 RewriteRule (^|/)\. - [F,L]

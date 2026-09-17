@@ -1,9 +1,17 @@
 <?php
 final class BusinessLeads {
  public const SOURCES=['google-maps'=>'Google Maps','yelp'=>'Yelp','yellow-pages'=>'Yellow Pages'];
- public static function parameters(string $source,string $keyword,string $location,int $page): array {
+ public static function parameters(string $source,string $keyword,string $location,int $page,string $coordinates=''): array {
   if(!isset(self::SOURCES[$source]))throw new InvalidArgumentException('Choose a supported service.');
-  return $source==='google-maps'?['q'=>$keyword.' in '.$location,'start'=>($page-1)*20]:array_merge(['keyword'=>$keyword,'location'=>$location],$source==='yelp'?['start'=>($page-1)*10]:['page'=>$page]);
+  if($source==='google-maps'){
+   $params=['q'=>$keyword.' in '.$location];
+   if($coordinates!==''){
+    if(!preg_match('/^@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(\d{1,2})z$/D',$coordinates,$m)||abs((float)$m[1])>90||abs((float)$m[2])>180||(int)$m[3]<1||(int)$m[3]>21)fail('Map coordinates must look like @40.7128,-74.0060,14z.');
+    $params['ll']=$coordinates;$params['start']=($page-1)*20;
+   }elseif($page>1)fail('Add map coordinates to search beyond the first page.');
+   return $params;
+  }
+  return array_merge(['keyword'=>$keyword,'location'=>$location],$source==='yelp'?['start'=>($page-1)*10]:['page'=>$page]);
  }
  public static function parse(array $data): array {
   if(isset($data['error'])||isset($data['errors'])||isset($data['requestMetadata']['status'])&&$data['requestMetadata']['status']!=='ok')throw new RuntimeException('The lead service could not complete this search.');
@@ -16,10 +24,10 @@ final class BusinessLeads {
    $key=hash('sha256',mb_strtolower($name.'|'.$r['address'].'|'.$r['phone']));$out[$key]=$r;
   }return $out;
  }
- public static function search(string $source,string $keyword,string $location,int $page,?callable $fetch=null): array {
+ public static function search(string $source,string $keyword,string $location,int $page,?callable $fetch=null,string $coordinates=''): array {
   $key=cfg('LEADS_API_KEY')?:cfg('RANKING_API_KEY');if(!$key)fail('Lead search is not configured. Add the lead service key in server configuration.',503);
   $path=['google-maps'=>'google-maps','yelp'=>'yelp','yellow-pages'=>'yellowpages'][$source]??'';
-  $params=self::parameters($source,$keyword,$location,$page);
+  $params=self::parameters($source,$keyword,$location,$page,$coordinates);
   try{$r=($fetch??[SafeHttp::class,'request'])('https://api.hasdata.com/scrape/'.$path.'/search?'.http_build_query($params),'GET',['Accept: application/json','x-api-key: '.$key],null,0,null,90);}catch(Throwable){fail('Lead search is temporarily unavailable. Please retry.',502);}
   if($r['status']!==200)fail(match($r['status']){401,403=>'Lead service credentials need attention.',402=>'Lead service credits are exhausted.',429=>'Search limit reached. Please retry later.',default=>'Lead service could not complete the request.'},502);
   try{$data=json_decode($r['body'],true,64,JSON_THROW_ON_ERROR);if(!is_array($data))throw new RuntimeException();return self::parse($data);}catch(Throwable){fail('Lead service returned incomplete results. Please retry.',502);}

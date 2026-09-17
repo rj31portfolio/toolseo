@@ -21,7 +21,7 @@ if($op==='lead-export'){
 }
 if($op==='lead-search'){
  rate_limit('business-search:'.$admin['id'],10,300);$keyword=required_input('keyword',150);$location=required_input('location',150);$page=filter_var(input('page',3,'1'),FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>50]]);if(!$page)fail('Choose page 1 to 50.');session_write_close();set_time_limit(120);
- $results=BusinessLeads::search($source,$keyword,$location,$page);$added=0;
+ $results=BusinessLeads::search($source,$keyword,$location,$page,null,input('coordinates',100));$added=0;
  foreach($results as $hash=>$r)$added+=query('INSERT IGNORE INTO zentro_leads(source,fingerprint,business_name,phone,website,address,listing_url,created_by) VALUES (?,?,?,?,?,?,?,?)',[$source,$hash,...array_values($r),$admin['id']])->rowCount();
  audit_log('business_leads.searched',['source'=>$source,'count'=>count($results)]);json_response(['redirect'=>url('/admin/'.$source.'-leads')],count($results).' results; '.$added.' new leads saved.');
 }

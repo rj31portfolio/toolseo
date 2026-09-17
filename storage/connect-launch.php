@@ -1,0 +1,6 @@
+﻿<?php
+require dirname(__DIR__).'/includes/bootstrap.php';
+$f=ROOT.'/admin/advanced.php';$s=file_get_contents($f);$s=str_replace("'ranking'=>'Google rankings", "'leads'=>'Business lead service','ranking'=>'Google rankings",$s);file_put_contents($f,$s);
+$f=ROOT.'/api/admin-extended.php';$s=file_get_contents($f);$s=str_replace("['ai','ranking','keyword','backlink','smtp','razorpay']", "['ai','ranking','keyword','backlink','smtp','razorpay','leads']",$s);$s=str_replace("$"."maps=['ai'", "$"."maps=['leads'=>['LEADS_API_KEY'],'ai'",$s);$s=str_replace("if($"."provider==='ai')$"."updates=", "if($"."provider==='leads')$"."updates=['LEADS_API_KEY'=>$"."key];elseif($"."provider==='ai')$"."updates=",$s);file_put_contents($f,$s);
+$f=ROOT.'/includes/sidebar.php';$s=file_get_contents($f);$s=str_replace("if(is_admin())$"."groups['B2B Leads']=", "if(is_admin())$"."groups['Business leads & content']=['admin/google-maps-leads'=>['Google Maps Leads','search'],'admin/yelp-leads'=>['Yelp Leads','search'],'admin/yellow-pages-leads'=>['Yellow Pages Leads','search'],'admin/blog'=>['Blog','layers']];\nif(is_admin())$"."groups['B2B Leads']=",$s);file_put_contents($f,$s);
+foreach(['site_name'=>'SEO Zentro','contact_email'=>'info@seozentro.com'] as $k=>$v)query('INSERT INTO settings(name,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=VALUES(value)',[$k,json_encode($v)]);

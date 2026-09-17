@@ -2,12 +2,13 @@
 $catalog=WorkspaceUI::directory();
 $groups=['Workspace'=>['dashboard'=>['Overview','grid'],'services'=>['All tools & services','layers'],'websites'=>['My websites','globe']]];
 foreach($catalog as $key=>[$group,$name,$description,$steps,$result,$icon])$groups[$group][$key]=[$name,$icon];
+if(is_admin())$groups['Business leads & content']=['admin/google-maps-leads'=>['Google Maps Leads','search'],'admin/yelp-leads'=>['Yelp Leads','search'],'admin/yellow-pages-leads'=>['Yellow Pages Leads','search'],'admin/blog'=>['Blog','layers']];
 if(is_admin())$groups['B2B Leads']=['admin/b2b-leads'=>['B2B Lead Extractor','search']];
 if(is_admin())$groups['SEO Expert']=['admin/seo-expert'=>['SEO Expert Leads','users']];
 $groups['Account']=['billing'=>['Plan & billing','file'],'profile'=>['My profile','settings']];
 ?>
 <aside class="sidebar" id="sidebar">
- <a class="logo" href="<?=url('/dashboard')?>"><span class="logo-symbol">↗</span><span>SEO<strong>AutoPilot</strong><small>YOUR GROWTH WORKSPACE</small></span></a>
+ <a class="logo" href="<?=url('/dashboard')?>"><span class="logo-symbol">↗</span><span>SEO <strong>Zentro</strong><small>YOUR GROWTH WORKSPACE</small></span></a>
  <label class="nav-search"><?=WorkspaceUI::icon('search')?><input type="search" data-nav-search placeholder="Find a tool…" aria-label="Find a navigation item"></label>
  <nav aria-label="Workspace">
  <?php foreach($groups as $heading=>$items):?><div class="nav-group"><h2 class="nav-group-title"><?=e($heading)?></h2><?php foreach($items as $key=>[$label,$icon]):?><a class="nav-item <?=$section===$key?'active':''?>" <?=$section===$key?'aria-current="page"':''?> href="<?=url('/'.$key).($wid?'?website_id='.$wid:'')?>"><?=WorkspaceUI::icon($icon)?><span><?=e($label)?></span><?php if($key==='ai-assistant'):?><small>AI</small><?php endif;?></a><?php endforeach;?></div><?php endforeach;?>

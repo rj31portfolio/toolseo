@@ -40,4 +40,4 @@ $modules=['local-seo','sitemap-generator','robots-generator','services','dashboa
 if(isset(WorkspaceUI::utilities()[$section])){$localTool=substr($section,6);$section='no-api-tools';require ROOT.'/dashboard/index.php';exit;}
 if($section==='no-api-tools'){$section='services';}
 if(in_array($section,$modules)){require ROOT.'/dashboard/index.php';exit;}
-fail('We couldnÃ¢â‚¬â„¢t find that page.',404);
+fail('We couldn’t find that page.',404);
